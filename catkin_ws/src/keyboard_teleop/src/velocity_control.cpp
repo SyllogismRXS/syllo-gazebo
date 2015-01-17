@@ -91,6 +91,7 @@ int main(int argc, char **argv)
           //Eigen::Quaternion<float> direction;
 
           Eigen::Quaternion<float>::Vector3 direction(0,0,0);
+          Eigen::Quaternion<float>::Vector3 rotation(0,0,0);          
 
           char c, c2;          
           c = getch();         
@@ -117,7 +118,10 @@ int main(int argc, char **argv)
                //msg.linear.y = -linear_mag;
                break;
           case 'q':
-               quit = true;
+               rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(angular_mag,0,0));
+               break;
+          case 'e':
+               rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(-angular_mag,0,0));
                break;
           case 27:
                if (getch() == '[') {
@@ -125,18 +129,22 @@ int main(int argc, char **argv)
                     switch(c2) {
                     case 'D':
                          // LEFT ARROW
-                         msg.angular.z = angular_mag;
+                         //msg.angular.z = angular_mag;
+                         rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(0,0,angular_mag));
                          break;
                     case 'C':
                          // RIGHT ARROW
-                         msg.angular.z = -angular_mag;
+                         //msg.angular.z = -angular_mag;
+                         rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(0,0,-angular_mag));
                          break;
                     case 'A':
-                         msg.angular.y = angular_mag;
+                         //msg.angular.y = angular_mag;
+                         rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(0,angular_mag,0));
                          // UP ARROW
                          break;
                     case 'B':
-                         msg.angular.y = -angular_mag;
+                         //msg.angular.y = -angular_mag;
+                         rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(0,-angular_mag,0));
                          // DOWN ARROW
                          break;
                     default:
@@ -152,6 +160,9 @@ int main(int argc, char **argv)
           msg.linear.y = direction.y();
           msg.linear.z = direction.z();
 
+          msg.angular.x = rotation.x();
+          msg.angular.y = rotation.y();
+          msg.angular.z = rotation.z();
           //printf("Got: %c=%d\n",c,c);
           
           twist_pub_.publish(msg);

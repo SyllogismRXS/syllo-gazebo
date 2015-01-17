@@ -29,7 +29,7 @@
 
   <!-- Keyboard Control -->
   <node ns="eye" name="velocity_control_node" pkg="keyboard_teleop" type="velocity_control" respawn="false" output="screen"
-	args="10 60" launch-prefix="xterm -e" />
+	args="50 60" launch-prefix="xterm -e" />
 
   <!-- ROV Camera -->
   <node pkg="image_view" name="image_view"  type="image_view" 
