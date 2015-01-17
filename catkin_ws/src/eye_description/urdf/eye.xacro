@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<robot name="eye" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Import all Gazebo-customization elements, including Gazebo colors -->
+  <xacro:include filename="$(find eye_description)/urdf/eye.gazebo" />
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find eye_description)/urdf/materials.xacro" />
+
+  <link name="base_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+
+    <collision>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+    
+    <inertial>
+      <mass value="5"/>
+      <inertia ixx="0.083" ixy="0.0"   ixz="0.0" 
+                           iyy="0.083" iyz="0.0" 
+                                       izz="0.083"/>
+    </inertial>              
+  </link>
+
+  <xacro:property name="sonar_size" value="0.05" />
+  <joint name="sonar_joint" type="fixed">
+    <axis xyz="0 0 1.5708" />
+    <origin xyz="0 0 -${sonar_size*2}" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="sonar_link"/>
+  </joint>
+
+  <!-- Sonar -->
+  <link name="sonar_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <xacro:property name="camera_size" value="0.05" />
+  <joint name="camera_joint" type="fixed">
+    <axis xyz="0 0 1.5708" />
+    <origin xyz="0 0 ${camera_size*2}" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+  </joint>
+
+  <!-- Camera -->
+  <link name="camera_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+</robot>
