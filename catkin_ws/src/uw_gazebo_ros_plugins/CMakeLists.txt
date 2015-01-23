@@ -114,6 +114,17 @@ target_link_libraries(${UW_VELCMD_PLUGIN_NAME}
   ${GAZEBO_LIBRARIES}
   )
 
+set(IMAGING_SONAR_PLUGIN_NAME "imaging_sonar")
+
+add_library(${IMAGING_SONAR_PLUGIN_NAME} 
+  src/ImagingSonar.cc
+  )
+
+target_link_libraries(${IMAGING_SONAR_PLUGIN_NAME}
+  ${catkin_LIBRARIES} 
+  ${GAZEBO_LIBRARIES}
+  )
+
 ## Declare a cpp executable
 # add_executable(uw_gazebo_ros_plugins_node src/uw_gazebo_ros_plugins_node.cpp)
 

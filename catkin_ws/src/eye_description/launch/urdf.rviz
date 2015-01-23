@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /PointCloud1
       Splitter Ratio: 0.5
     Tree Height: 517
   - Class: rviz/Selection
@@ -26,7 +27,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud
 Visualization Manager:
   Class: ""
   Displays:
@@ -63,37 +64,12 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        part0:
+        camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
           Value: true
-        part1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        part2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        part3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        part4_base:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        part4_jaw1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        part4_jaw2:
+        sonar_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -111,19 +87,9 @@ Visualization Manager:
         All Enabled: true
         base_link:
           Value: true
-        part0:
+        camera_link:
           Value: true
-        part1:
-          Value: true
-        part2:
-          Value: true
-        part3:
-          Value: true
-        part4_base:
-          Value: true
-        part4_jaw1:
-          Value: true
-        part4_jaw2:
+        sonar_link:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -132,16 +98,40 @@ Visualization Manager:
       Show Names: true
       Tree:
         base_link:
-          part0:
-            part1:
-              part2:
-                part3:
-                  part4_base:
-                    part4_jaw1:
-                      {}
-                    part4_jaw2:
-                      {}
+          camera_link:
+            {}
+          sonar_link:
+            {}
       Update Interval: 0
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.01
+      Style: Flat Squares
+      Topic: /sonar_image
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
   Enabled: true
   Global Options:
@@ -167,22 +157,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.63902
+      Distance: 1.23096
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.189645
-        Y: 0.134235
-        Z: 0.0797608
+        X: 0.00787436
+        Y: -0.202675
+        Z: 0.185527
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.395398
+      Pitch: 0.200398
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.84359
+      Yaw: 3.19859
     Saved: ~
 Window Geometry:
   Displays:
@@ -200,5 +190,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1216
-  X: 53
+  X: 356
   Y: 24

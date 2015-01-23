@@ -36,8 +36,10 @@
         args="image:=/eye/camera1/image_raw" />  
 
   <!-- Depth Camera -->
+  <!--
   <node pkg="image_view" name="depth_view"  type="image_view" 
-        args="image:=/sonar_camera/camera/depth_image" />  
+        args="image:=/depth_camera/camera/depth_image" />  
+  -->
 
   
   <group if="$(arg rviz)">

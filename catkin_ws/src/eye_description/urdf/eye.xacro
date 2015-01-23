@@ -6,6 +6,8 @@
   <!-- Import Rviz colors -->
   <xacro:include filename="$(find eye_description)/urdf/materials.xacro" />
 
+  <xacro:property name="pi" value="3.1415926535897931" />
+  
   <link name="base_link">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -29,29 +31,29 @@
     </inertial>              
   </link>
 
-  <xacro:property name="sonar_size" value="0.05" />
+  <xacro:property name="sonar_length" value="0.15" />
+  <xacro:property name="sonar_radius" value="0.05" />
   <joint name="sonar_joint" type="fixed">
-    <axis xyz="0 0 1.5708" />
-    <origin xyz="0 0 -${sonar_size*2}" rpy="0 0 0"/>
+    <axis xyz="0 0 0" />
+    <origin xyz="${sonar_length/2} 0 0" rpy="3.14159 0 0"/>
     <parent link="base_link"/>
     <child link="sonar_link"/>
   </joint>
-
-  <!-- Sonar -->
+  
   <link name="sonar_link">
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-    <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+        <cylinder length="${sonar_length}" radius="${sonar_radius}"/>
       </geometry>
     </collision>
 
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-    <box size="${sonar_size} ${sonar_size} ${sonar_size}"/>
+        <cylinder length="${sonar_length}" radius="${sonar_radius}"/>
       </geometry>
-      <material name="blue"/>
+      <material name="green"/>
     </visual>
 
     <inertial>
@@ -60,6 +62,41 @@
       <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
     </inertial>
   </link>
+
+
+  <!-- DEPTH-->
+  <xacro:if value="false">
+    <xacro:property name="depth_size" value="0.05" />
+    <joint name="depth_joint" type="fixed">
+      <axis xyz="0 0 1.5708" />
+      <origin xyz="0 0 -${depth_size*2}" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="depth_link"/>
+    </joint>
+
+    <link name="depth_link">
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${depth_size} ${depth_size} ${depth_size}"/>
+        </geometry>
+      </collision>
+
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${depth_size} ${depth_size} ${depth_size}"/>
+        </geometry>
+        <material name="blue"/>
+      </visual>
+
+      <inertial>
+        <mass value="1e-5" />
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+      </inertial>
+    </link>
+  </xacro:if>
 
   <xacro:property name="camera_size" value="0.05" />
   <joint name="camera_joint" type="fixed">
