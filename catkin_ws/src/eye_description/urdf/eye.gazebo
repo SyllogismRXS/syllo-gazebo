@@ -16,6 +16,11 @@
     <kd value="10000.0"/>
   </gazebo>
 
+<!--
+    raycount: number of actual rays used in gazebo
+    rangeCount: number of range values made available to user
+    If rayCount is less than rangeCount, it will interpolate.
+-->
   
   <gazebo reference="sonar_link">
     <turnGravityOff>true</turnGravityOff>
@@ -25,7 +30,7 @@
       <always_on>true</always_on>
       <update_rate>15.0</update_rate>
       <pose>0 0 0 0 0 0</pose>
-      <visualize>true</visualize>
+      <visualize>false</visualize>
       <ray>
         <scan>
           <horizontal>
@@ -36,7 +41,7 @@
           </horizontal>        
           <vertical>
             <samples>32</samples>
-            <resolution>1.0</resolution>
+            <resolution>1</resolution>
             <min_angle>-0.174532778</min_angle>
             <max_angle>0.174532778</max_angle>
           </vertical>          
@@ -53,7 +58,7 @@
       <plugin name="gazebo_ros_imaging_sonar_controller" filename="libimaging_sonar.so">
         <alwaysOn>true</alwaysOn>
         <updateRate>30.0</updateRate>
-        <topicName>sonar_image</topicName>
+        <topicName>sonar_cloud</topicName>
         <frameName>sonar_link</frameName>
       </plugin>
       

@@ -112,7 +112,7 @@ void ImagingSonar::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
           this->update_rate_ = _sdf->GetElement("updateRate")->Get<double>();
      // FIXME:  update the update_rate_
 
-// Make sure the ROS node for Gazebo has already been initialized
+     // Make sure the ROS node for Gazebo has already been initialized
      if (!ros::isInitialized())
      {
           ROS_FATAL_STREAM("A ROS node for Gazebo has not been initialized, unable to load plugin. "
@@ -241,6 +241,19 @@ void ImagingSonar::PutLaserData(common::Time &_updateTime)
   double yDiff = maxAngle.Radian() - minAngle.Radian();
   double pDiff = verticalMaxAngle.Radian() - verticalMinAngle.Radian();
 
+  //cout << "================================" << endl;
+  //cout << "maxAngle: " << maxAngle << endl;
+  //cout << "minAngle: " << minAngle << endl;
+  //cout << "maxRange: " << maxRange << endl;
+  //cout << "minRange: " << minRange  << endl;
+  //cout << "rayCount: " << rayCount  << endl;
+  //cout << "rangeCount: " << rangeCount  << endl;
+  //cout << "verticalRayCount: " << verticalRayCount  << endl;
+  //cout << "verticalRangeCount: " << verticalRangeCount  << endl;
+  //cout << "verticalMaxAngle: " << verticalMaxAngle  << endl;
+  //cout << "verticalMinAngle: " << verticalMinAngle  << endl;
+  //cout << "yDiff: " << yDiff  << endl;
+  //cout << "pDiff: " << pDiff  << endl;
 
   // set size of cloud message everytime!
   //int r_size = rangeCount * verticalRangeCount;
@@ -290,12 +303,12 @@ void ImagingSonar::PutLaserData(common::Time &_updateTime)
       r1 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j1) , maxRange-minRange);
       r2 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j2) , maxRange-minRange);
       r3 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j3) , maxRange-minRange);
-      r4 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j4) , maxRange-minRange);
+      r4 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j4) , maxRange-minRange);      
 
       // Range is linear interpolation if values are close,
       // and min if they are very different
       r = (1-vb)*((1 - hb) * r1 + hb * r2)
-         +   vb *((1 - hb) * r3 + hb * r4);
+         +   vb *((1 - hb) * r3 + hb * r4);      
 
       // Intensity is averaged
       intensity = 0.25*(this->parent_sensor_->GetLaserShape()->GetRetro(j1) +
@@ -313,6 +326,32 @@ void ImagingSonar::PutLaserData(common::Time &_updateTime)
       double yAngle = 0.5*(hja+hjb) * yDiff / (rayCount -1) + minAngle.Radian();
       double pAngle = 0.5*(vja+vjb) * pDiff / (verticalRayCount -1) + verticalMinAngle.Radian();
 
+      //if (j == 0 && i == 0) {
+      //     cout << "========================" << endl;
+      //     cout << "vb: " << vb << endl;
+      //     cout << "hb: " << hb << endl;
+      //     cout << "hja: " << hja << endl;
+      //     cout << "hjb: " << hjb << endl;
+      //     cout << "vja: " << vja << endl;
+      //     cout << "vjb: " << vjb << endl;
+      //     cout << "j1: " << j1 << endl;
+      //     cout << "j2: " << j2 << endl;
+      //     cout << "j3: " << j3 << endl;
+      //     cout << "j4: " << j4 << endl;
+      //     cout << "r1: " << r1 << endl;
+      //     cout << "r2: " << r2 << endl;
+      //     cout << "r3: " << r3 << endl;
+      //     cout << "r4: " << r4 << endl;
+      //     cout << "r: " << r << endl;           
+      //     cout << "intensity: " << intensity << endl;
+      //     cout << "Retro(j1): " << this->parent_sensor_->GetLaserShape()->GetRetro(j1) << endl;
+      //     cout << "Retro(j2): " << this->parent_sensor_->GetLaserShape()->GetRetro(j2) << endl;
+      //     cout << "Retro(j3): " << this->parent_sensor_->GetLaserShape()->GetRetro(j3) << endl;
+      //     cout << "Retro(j4): " << this->parent_sensor_->GetLaserShape()->GetRetro(j4) << endl;
+      //     cout << "yAngle: " << yAngle << endl;
+      //     cout << "pAngle: " << pAngle << endl;           
+      //}
+
       /***************************************************************/
       /*                                                             */
       /*  point scan from laser                                      */
@@ -321,27 +360,28 @@ void ImagingSonar::PutLaserData(common::Time &_updateTime)
       //compare 2 doubles
       double diffRange = maxRange - minRange;
       double diff  = diffRange - r;
-      if (fabs(diff) < EPSILON_DIFF)
-      {
-        // no noise if at max range
-        geometry_msgs::Point32 point;
-        //pAngle is rotated by yAngle:
-        point.x = r * cos(pAngle) * cos(yAngle);
-        point.y = r * cos(pAngle) * sin(yAngle);
-        point.z = -r * sin(pAngle);
-
-        this->cloud_msg_.points.push_back(point); 
-      } 
-      else 
+      //if (fabs(diff) < EPSILON_DIFF)
+      //{
+      //  // no noise if at max range
+      //  geometry_msgs::Point32 point;
+      //  //pAngle is rotated by yAngle:
+      //  point.x = r * cos(pAngle) * cos(yAngle);
+      //  point.y = r * cos(pAngle) * sin(yAngle);
+      //  point.z = -r * sin(pAngle);
+      //
+      //  this->cloud_msg_.points.push_back(point); 
+      //} 
+      //else 
       { 
         geometry_msgs::Point32 point;
         //pAngle is rotated by yAngle:
         //point.x = r * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
         //point.y = r * cos(pAngle) * sin(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
         //point.z = -r * sin(pAngle) + this->GaussianKernel(0,this->gaussian_noise_);
+        
         point.x = r * cos(pAngle) * cos(yAngle);
         point.y = r * cos(pAngle) * sin(yAngle);
-        point.z = -r * sin(pAngle);
+        point.z = r * sin(pAngle);                        
         
         this->cloud_msg_.points.push_back(point); 
       } // only 1 channel 

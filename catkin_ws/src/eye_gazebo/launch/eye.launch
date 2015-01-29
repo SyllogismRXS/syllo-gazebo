@@ -10,8 +10,8 @@
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/empty.world"/>-->
-    <arg name="world_name" value="$(find eye_gazebo)/worlds/cafe.world"/>
+    <arg name="world_name" value="$(find eye_gazebo)/worlds/empty.world"/>
+    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/cafe.world"/>-->
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="paused" value="$(arg paused)"/>
@@ -22,6 +22,9 @@
   <!-- Load the URDF into the ROS Parameter Server -->
   <param name="robot_description"
 	 command="$(find xacro)/xacro.py '$(find eye_description)/urdf/eye.xacro'" />
+
+  <!-- Combine joint values -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
 
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"

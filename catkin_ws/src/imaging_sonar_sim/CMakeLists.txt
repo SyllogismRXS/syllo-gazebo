@@ -1,22 +1,25 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(uw_gazebo_ros_plugins)
+project(imaging_sonar_sim)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  gazebo_ros
-  roscpp
-  rospy
-  std_msgs
+  cv_bridge
   geometry_msgs
+  image_transport
+  roscpp
+  sensor_msgs
+  std_msgs
+  tf
   pcl_ros
 )
 
+find_package(OpenCV)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-find_package(gazebo REQUIRED)
-link_directories(${GAZEBO_LIBRARY_DIRS})
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -72,7 +75,7 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs
+#   geometry_msgs#   sensor_msgs#   std_msgs
 # )
 
 ###################################
@@ -85,9 +88,9 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-# INCLUDE_DIRS include
-#  LIBRARIES uw_gazebo_ros_plugins
-#  CATKIN_DEPENDS gazebo_ros roscpp rospy std_msgs
+#  INCLUDE_DIRS include
+#  LIBRARIES imaging_sonar_sim
+#  CATKIN_DEPENDS cv_bridge geometry_msgs image_transport roscpp sensor_msgs std_msgs tf
 #  DEPENDS system_lib
 )
 
@@ -97,46 +100,29 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include)
+# include_directories(include)
 include_directories(
-  ${Boost_INCLUDE_DIR} 
-  ${catkin_INCLUDE_DIRS} 
-  ${GAZEBO_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
 )
 
-set(UW_VELCMD_PLUGIN_NAME "uw_VelCmd")
-
-add_library(${UW_VELCMD_PLUGIN_NAME} 
-  src/VelCmd.cpp
-  )
-
-target_link_libraries(${UW_VELCMD_PLUGIN_NAME}
-  ${catkin_LIBRARIES} 
-  ${GAZEBO_LIBRARIES}
-  )
-
-set(IMAGING_SONAR_PLUGIN_NAME "imaging_sonar")
-
-add_library(${IMAGING_SONAR_PLUGIN_NAME} 
-  src/ImagingSonar.cc
-  )
-
-target_link_libraries(${IMAGING_SONAR_PLUGIN_NAME}
-  ${catkin_LIBRARIES} 
-  ${GAZEBO_LIBRARIES}
-  )
+## Declare a cpp library
+# add_library(imaging_sonar_sim
+#   src/${PROJECT_NAME}/imaging_sonar_sim.cpp
+# )
 
 ## Declare a cpp executable
-# add_executable(uw_gazebo_ros_plugins_node src/uw_gazebo_ros_plugins_node.cpp)
+set(NODE_NAME_1 "imaging_sonar_sim")
+add_executable(${NODE_NAME_1} src/imaging_sonar_sim.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(uw_gazebo_ros_plugins_node uw_gazebo_ros_plugins_generate_messages_cpp)
+add_dependencies(${NODE_NAME_1} imaging_sonar_sim_generate_messages_cpp)
 
-## Specify libraries to link a library or executable target against
-# target_link_libraries(uw_gazebo_ros_plugins_node
-#   ${catkin_LIBRARIES}
-# )
+# Specify libraries to link a library or executable target against
+target_link_libraries( ${NODE_NAME_1}
+   ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
+   )
 
 #############
 ## Install ##
@@ -153,7 +139,7 @@ target_link_libraries(${IMAGING_SONAR_PLUGIN_NAME}
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS uw_gazebo_ros_plugins uw_gazebo_ros_plugins_node
+# install(TARGETS imaging_sonar_sim imaging_sonar_sim_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -178,7 +164,7 @@ target_link_libraries(${IMAGING_SONAR_PLUGIN_NAME}
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_uw_gazebo_ros_plugins.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_imaging_sonar_sim.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
