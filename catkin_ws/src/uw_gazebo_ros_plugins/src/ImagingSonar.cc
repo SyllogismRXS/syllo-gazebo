@@ -147,6 +147,7 @@ void ImagingSonar::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
 
      this->callback_laser_queue_thread_ = boost::thread( boost::bind( &ImagingSonar::LaserQueueThread,this ) );
 
+     cout << "Finished Loading" << endl;
      cout << "=======================================" << endl;
 }
 
@@ -154,17 +155,17 @@ void ImagingSonar::Load(sensors::SensorPtr _parent, sdf::ElementPtr _sdf)
 // Increment count
 void ImagingSonar::LaserConnect()
 {
-  this->laser_connect_count_++;
-  this->parent_sensor_->SetActive(true);
+     this->laser_connect_count_++;
+     this->parent_sensor_->SetActive(true);
 }
 ////////////////////////////////////////////////////////////////////////////////
 // Decrement count
 void ImagingSonar::LaserDisconnect()
 {
-  this->laser_connect_count_--;
+     this->laser_connect_count_--;
 
-  if (this->laser_connect_count_ == 0)
-    this->parent_sensor_->SetActive(false);
+     if (this->laser_connect_count_ == 0)
+          this->parent_sensor_->SetActive(false);
 }
 
 /////////////////////////////////////////////////
@@ -216,184 +217,189 @@ void ImagingSonar::PutSonarImage(common::Time &_updateTime)
 // Put laser data to the interface
 void ImagingSonar::PutLaserData(common::Time &_updateTime)
 {
-  int i, hja, hjb;
-  int j, vja, vjb;
-  double vb, hb;
-  int    j1, j2, j3, j4; // four corners indices
-  double r1, r2, r3, r4, r; // four corner values + interpolated range
-  double intensity;
+     int i, hja, hjb;
+     int j, vja, vjb;
+     double vb, hb;
+     int    j1, j2, j3, j4; // four corners indices
+     double r1, r2, r3, r4, r; // four corner values + interpolated range
+     double intensity;
 
-  this->parent_sensor_->SetActive(false);
+     this->parent_sensor_->SetActive(false);
 
-  math::Angle maxAngle = this->parent_sensor_->GetAngleMax();
-  math::Angle minAngle = this->parent_sensor_->GetAngleMin();
+     math::Angle maxAngle = this->parent_sensor_->GetAngleMax();
+     math::Angle minAngle = this->parent_sensor_->GetAngleMin();
 
-  double maxRange = this->parent_sensor_->GetRangeMax();
-  double minRange = this->parent_sensor_->GetRangeMin();
-  int rayCount = this->parent_sensor_->GetRayCount();
-  int rangeCount = this->parent_sensor_->GetRangeCount();
+     double maxRange = this->parent_sensor_->GetRangeMax();
+     double minRange = this->parent_sensor_->GetRangeMin();
+     int rayCount = this->parent_sensor_->GetRayCount();
+     int rangeCount = this->parent_sensor_->GetRangeCount();
 
-  int verticalRayCount = this->parent_sensor_->GetVerticalRayCount();
-  int verticalRangeCount = this->parent_sensor_->GetVerticalRangeCount();
-  math::Angle verticalMaxAngle = this->parent_sensor_->GetVerticalAngleMax();
-  math::Angle verticalMinAngle = this->parent_sensor_->GetVerticalAngleMin();
+     int verticalRayCount = this->parent_sensor_->GetVerticalRayCount();
+     int verticalRangeCount = this->parent_sensor_->GetVerticalRangeCount();
+     math::Angle verticalMaxAngle = this->parent_sensor_->GetVerticalAngleMax();
+     math::Angle verticalMinAngle = this->parent_sensor_->GetVerticalAngleMin();
 
-  double yDiff = maxAngle.Radian() - minAngle.Radian();
-  double pDiff = verticalMaxAngle.Radian() - verticalMinAngle.Radian();
+     double yDiff = maxAngle.Radian() - minAngle.Radian();
+     double pDiff = verticalMaxAngle.Radian() - verticalMinAngle.Radian();
 
-  //cout << "================================" << endl;
-  //cout << "maxAngle: " << maxAngle << endl;
-  //cout << "minAngle: " << minAngle << endl;
-  //cout << "maxRange: " << maxRange << endl;
-  //cout << "minRange: " << minRange  << endl;
-  //cout << "rayCount: " << rayCount  << endl;
-  //cout << "rangeCount: " << rangeCount  << endl;
-  //cout << "verticalRayCount: " << verticalRayCount  << endl;
-  //cout << "verticalRangeCount: " << verticalRangeCount  << endl;
-  //cout << "verticalMaxAngle: " << verticalMaxAngle  << endl;
-  //cout << "verticalMinAngle: " << verticalMinAngle  << endl;
-  //cout << "yDiff: " << yDiff  << endl;
-  //cout << "pDiff: " << pDiff  << endl;
+     //cout << "================================" << endl;
+     //cout << "maxAngle: " << maxAngle << endl;
+     //cout << "minAngle: " << minAngle << endl;
+     //cout << "maxRange: " << maxRange << endl;
+     //cout << "minRange: " << minRange  << endl;
+     //cout << "rayCount: " << rayCount  << endl;
+     //cout << "rangeCount: " << rangeCount  << endl;
+     //cout << "verticalRayCount: " << verticalRayCount  << endl;
+     //cout << "verticalRangeCount: " << verticalRangeCount  << endl;
+     //cout << "verticalMaxAngle: " << verticalMaxAngle  << endl;
+     //cout << "verticalMinAngle: " << verticalMinAngle  << endl;
+     //cout << "yDiff: " << yDiff  << endl;
+     //cout << "pDiff: " << pDiff  << endl;
 
-  // set size of cloud message everytime!
-  //int r_size = rangeCount * verticalRangeCount;
-  this->cloud_msg_.points.clear();
-  this->cloud_msg_.channels.clear();
-  this->cloud_msg_.channels.push_back(sensor_msgs::ChannelFloat32());
+     // set size of cloud message everytime!
+     //int r_size = rangeCount * verticalRangeCount;
+     this->cloud_msg_.points.clear();
+     this->cloud_msg_.channels.clear();
+     this->cloud_msg_.channels.push_back(sensor_msgs::ChannelFloat32());
 
-  /***************************************************************/
-  /*                                                             */
-  /*  point scan from laser                                      */
-  /*                                                             */
-  /***************************************************************/
-  boost::mutex::scoped_lock sclock(this->lock);
-  // Add Frame Name
-  this->cloud_msg_.header.frame_id = this->frame_name_;
-  this->cloud_msg_.header.stamp.sec = _updateTime.sec;
-  this->cloud_msg_.header.stamp.nsec = _updateTime.nsec;
+     /***************************************************************/
+     /*                                                             */
+     /*  point scan from laser                                      */
+     /*                                                             */
+     /***************************************************************/
+     boost::mutex::scoped_lock sclock(this->lock);
+     // Add Frame Name
+     this->cloud_msg_.header.frame_id = this->frame_name_;
+     this->cloud_msg_.header.stamp.sec = _updateTime.sec;
+     this->cloud_msg_.header.stamp.nsec = _updateTime.nsec;
 
-  for (j = 0; j<verticalRangeCount; j++)
-  {
-    // interpolating in vertical direction
-    vb = (verticalRangeCount == 1) ? 0 : (double) j * (verticalRayCount - 1) / (verticalRangeCount - 1);
-    vja = (int) floor(vb);
-    vjb = std::min(vja + 1, verticalRayCount - 1);
-    vb = vb - floor(vb); // fraction from min
+     for (j = 0; j<verticalRangeCount; j++)
+     {
+          // interpolating in vertical direction
+          vb = (verticalRangeCount == 1) ? 0 : (double) j * (verticalRayCount - 1) / (verticalRangeCount - 1);
+          vja = (int) floor(vb);
+          vjb = std::min(vja + 1, verticalRayCount - 1);
+          vb = vb - floor(vb); // fraction from min
 
-    assert(vja >= 0 && vja < verticalRayCount);
-    assert(vjb >= 0 && vjb < verticalRayCount);
+          assert(vja >= 0 && vja < verticalRayCount);
+          assert(vjb >= 0 && vjb < verticalRayCount);
 
-    for (i = 0; i<rangeCount; i++)
-    {
-      // Interpolate the range readings from the rays in horizontal direction
-      hb = (rangeCount == 1)? 0 : (double) i * (rayCount - 1) / (rangeCount - 1);
-      hja = (int) floor(hb);
-      hjb = std::min(hja + 1, rayCount - 1);
-      hb = hb - floor(hb); // fraction from min
+          for (i = 0; i<rangeCount; i++)
+          {
+               // Interpolate the range readings from the rays in horizontal direction
+               hb = (rangeCount == 1)? 0 : (double) i * (rayCount - 1) / (rangeCount - 1);
+               hja = (int) floor(hb);
+               hjb = std::min(hja + 1, rayCount - 1);
+               hb = hb - floor(hb); // fraction from min
 
-      assert(hja >= 0 && hja < rayCount);
-      assert(hjb >= 0 && hjb < rayCount);
+               assert(hja >= 0 && hja < rayCount);
+               assert(hjb >= 0 && hjb < rayCount);
 
-      // indices of 4 corners
-      j1 = hja + vja * rayCount;
-      j2 = hjb + vja * rayCount;
-      j3 = hja + vjb * rayCount;
-      j4 = hjb + vjb * rayCount;
-      // range readings of 4 corners
-      r1 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j1) , maxRange-minRange);
-      r2 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j2) , maxRange-minRange);
-      r3 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j3) , maxRange-minRange);
-      r4 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j4) , maxRange-minRange);      
+               // indices of 4 corners
+               j1 = hja + vja * rayCount;
+               j2 = hjb + vja * rayCount;
+               j3 = hja + vjb * rayCount;
+               j4 = hjb + vjb * rayCount;
+               // range readings of 4 corners
+               r1 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j1) , maxRange-minRange);
+               r2 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j2) , maxRange-minRange);
+               r3 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j3) , maxRange-minRange);
+               r4 = std::min(this->parent_sensor_->GetLaserShape()->GetRange(j4) , maxRange-minRange);      
 
-      // Range is linear interpolation if values are close,
-      // and min if they are very different
-      r = (1-vb)*((1 - hb) * r1 + hb * r2)
-         +   vb *((1 - hb) * r3 + hb * r4);      
+               // Range is linear interpolation if values are close,
+               // and min if they are very different
+               r = (1-vb)*((1 - hb) * r1 + hb * r2)
+                    +   vb *((1 - hb) * r3 + hb * r4);      
 
-      // Intensity is averaged
-      intensity = 0.25*(this->parent_sensor_->GetLaserShape()->GetRetro(j1) +
-                        this->parent_sensor_->GetLaserShape()->GetRetro(j2) +
-                        this->parent_sensor_->GetLaserShape()->GetRetro(j3) +
-                        this->parent_sensor_->GetLaserShape()->GetRetro(j4));
+               // Intensity is averaged
+               intensity = 0.25*(this->parent_sensor_->GetLaserShape()->GetRetro(j1) +
+                                 this->parent_sensor_->GetLaserShape()->GetRetro(j2) +
+                                 this->parent_sensor_->GetLaserShape()->GetRetro(j3) +
+                                 this->parent_sensor_->GetLaserShape()->GetRetro(j4));      
 
-      // std::cout << " block debug "
-      //           << "  ij("<<i<<","<<j<<")"
-      //           << "  j1234("<<j1<<","<<j2<<","<<j3<<","<<j4<<")"
-      //           << "  r1234("<<r1<<","<<r2<<","<<r3<<","<<r4<<")"
-      //           << std::endl;
 
-      // get angles of ray to get xyz for point
-      double yAngle = 0.5*(hja+hjb) * yDiff / (rayCount -1) + minAngle.Radian();
-      double pAngle = 0.5*(vja+vjb) * pDiff / (verticalRayCount -1) + verticalMinAngle.Radian();
+               // std::cout << " block debug "
+               //           << "  ij("<<i<<","<<j<<")"
+               //           << "  j1234("<<j1<<","<<j2<<","<<j3<<","<<j4<<")"
+               //           << "  r1234("<<r1<<","<<r2<<","<<r3<<","<<r4<<")"
+               //           << std::endl;
 
-      //if (j == 0 && i == 0) {
-      //     cout << "========================" << endl;
-      //     cout << "vb: " << vb << endl;
-      //     cout << "hb: " << hb << endl;
-      //     cout << "hja: " << hja << endl;
-      //     cout << "hjb: " << hjb << endl;
-      //     cout << "vja: " << vja << endl;
-      //     cout << "vjb: " << vjb << endl;
-      //     cout << "j1: " << j1 << endl;
-      //     cout << "j2: " << j2 << endl;
-      //     cout << "j3: " << j3 << endl;
-      //     cout << "j4: " << j4 << endl;
-      //     cout << "r1: " << r1 << endl;
-      //     cout << "r2: " << r2 << endl;
-      //     cout << "r3: " << r3 << endl;
-      //     cout << "r4: " << r4 << endl;
-      //     cout << "r: " << r << endl;           
-      //     cout << "intensity: " << intensity << endl;
-      //     cout << "Retro(j1): " << this->parent_sensor_->GetLaserShape()->GetRetro(j1) << endl;
-      //     cout << "Retro(j2): " << this->parent_sensor_->GetLaserShape()->GetRetro(j2) << endl;
-      //     cout << "Retro(j3): " << this->parent_sensor_->GetLaserShape()->GetRetro(j3) << endl;
-      //     cout << "Retro(j4): " << this->parent_sensor_->GetLaserShape()->GetRetro(j4) << endl;
-      //     cout << "yAngle: " << yAngle << endl;
-      //     cout << "pAngle: " << pAngle << endl;           
-      //}
+               // get angles of ray to get xyz for point
+               double yAngle = 0.5*(hja+hjb) * yDiff / (rayCount -1) + minAngle.Radian();
+               double pAngle = 0.5*(vja+vjb) * pDiff / (verticalRayCount -1) + verticalMinAngle.Radian();
 
-      /***************************************************************/
-      /*                                                             */
-      /*  point scan from laser                                      */
-      /*                                                             */
-      /***************************************************************/
-      //compare 2 doubles
-      double diffRange = maxRange - minRange;
-      double diff  = diffRange - r;
-      //if (fabs(diff) < EPSILON_DIFF)
-      //{
-      //  // no noise if at max range
-      //  geometry_msgs::Point32 point;
-      //  //pAngle is rotated by yAngle:
-      //  point.x = r * cos(pAngle) * cos(yAngle);
-      //  point.y = r * cos(pAngle) * sin(yAngle);
-      //  point.z = -r * sin(pAngle);
-      //
-      //  this->cloud_msg_.points.push_back(point); 
-      //} 
-      //else 
-      { 
-        geometry_msgs::Point32 point;
-        //pAngle is rotated by yAngle:
-        //point.x = r * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
-        //point.y = r * cos(pAngle) * sin(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
-        //point.z = -r * sin(pAngle) + this->GaussianKernel(0,this->gaussian_noise_);
+               //if (j == 0 && i == 0) {
+               //     cout << "========================" << endl;
+               //     cout << "Retro1: " << this->parent_sensor_->GetLaserShape()->GetRetro(j1) << endl;
+               //     cout << "Retro2: " << this->parent_sensor_->GetLaserShape()->GetRetro(j2) << endl;
+               //     cout << "Retro3: " << this->parent_sensor_->GetLaserShape()->GetRetro(j3) << endl;
+               //     cout << "Retro4: " << this->parent_sensor_->GetLaserShape()->GetRetro(j4) << endl;               
+               //     cout << "vb: " << vb << endl;
+               //     cout << "hb: " << hb << endl;
+               //     cout << "hja: " << hja << endl;
+               //     cout << "hjb: " << hjb << endl;
+               //     cout << "vja: " << vja << endl;
+               //     cout << "vjb: " << vjb << endl;
+               //     cout << "j1: " << j1 << endl;
+               //     cout << "j2: " << j2 << endl;
+               //     cout << "j3: " << j3 << endl;
+               //     cout << "j4: " << j4 << endl;
+               //     cout << "r1: " << r1 << endl;
+               //     cout << "r2: " << r2 << endl;
+               //     cout << "r3: " << r3 << endl;
+               //     cout << "r4: " << r4 << endl;
+               //     cout << "r: " << r << endl;           
+               //     cout << "intensity: " << intensity << endl;
+               //     cout << "Retro(j1): " << this->parent_sensor_->GetLaserShape()->GetRetro(j1) << endl;
+               //     cout << "Retro(j2): " << this->parent_sensor_->GetLaserShape()->GetRetro(j2) << endl;
+               //     cout << "Retro(j3): " << this->parent_sensor_->GetLaserShape()->GetRetro(j3) << endl;
+               //     cout << "Retro(j4): " << this->parent_sensor_->GetLaserShape()->GetRetro(j4) << endl;
+               //     cout << "yAngle: " << yAngle << endl;
+               //     cout << "pAngle: " << pAngle << endl;           
+               //}
+
+               /***************************************************************/
+               /*                                                             */
+               /*  point scan from laser                                      */
+               /*                                                             */
+               /***************************************************************/
+               //compare 2 doubles
+               double diffRange = maxRange - minRange;
+               double diff  = diffRange - r;
+               //if (fabs(diff) < EPSILON_DIFF)
+               //{
+               //  // no noise if at max range
+               //  geometry_msgs::Point32 point;
+               //  //pAngle is rotated by yAngle:
+               //  point.x = r * cos(pAngle) * cos(yAngle);
+               //  point.y = r * cos(pAngle) * sin(yAngle);
+               //  point.z = -r * sin(pAngle);
+               //
+               //  this->cloud_msg_.points.push_back(point); 
+               //} 
+               //else 
+               { 
+                    geometry_msgs::Point32 point;
+                    //pAngle is rotated by yAngle:
+                    //point.x = r * cos(pAngle) * cos(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
+                    //point.y = r * cos(pAngle) * sin(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
+                    //point.z = -r * sin(pAngle) + this->GaussianKernel(0,this->gaussian_noise_);
         
-        point.x = r * cos(pAngle) * cos(yAngle);
-        point.y = r * cos(pAngle) * sin(yAngle);
-        point.z = r * sin(pAngle);                        
+                    point.x = r * cos(pAngle) * cos(yAngle);
+                    point.y = r * cos(pAngle) * sin(yAngle);
+                    point.z = r * sin(pAngle);                        
         
-        this->cloud_msg_.points.push_back(point); 
-      } // only 1 channel 
+                    this->cloud_msg_.points.push_back(point); 
+               } // only 1 channel 
 
-      //this->cloud_msg_.channels[0].values.push_back(intensity + this->GaussianKernel(0,this->gaussian_noise_)) ;
-      this->cloud_msg_.channels[0].values.push_back(intensity) ;
-    }
-  }
-  this->parent_sensor_->SetActive(true);
+               //this->cloud_msg_.channels[0].values.push_back(intensity + this->GaussianKernel(0,this->gaussian_noise_)) ;
+               this->cloud_msg_.channels[0].values.push_back(intensity) ;
+          }
+     }
+     this->parent_sensor_->SetActive(true);
 
-  // send data out via ros message
-  this->pub_.publish(this->cloud_msg_);
+     // send data out via ros message
+     this->pub_.publish(this->cloud_msg_);
 }
 
 // Custom Callback Queue
@@ -401,12 +407,12 @@ void ImagingSonar::PutLaserData(common::Time &_updateTime)
 // custom callback queue thread
 void ImagingSonar::LaserQueueThread()
 {
-  static const double timeout = 0.01;
+     static const double timeout = 0.01;
 
-  while (this->rosnode_->ok())
-  {
-    this->laser_queue_.callAvailable(ros::WallDuration(timeout));
-  }
+     while (this->rosnode_->ok())
+     {
+          this->laser_queue_.callAvailable(ros::WallDuration(timeout));
+     }
 }
 
 void ImagingSonar::OnStats( const boost::shared_ptr<msgs::WorldStatistics const> &_msg)

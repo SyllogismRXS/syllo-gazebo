@@ -44,6 +44,15 @@
         args="image:=/depth_camera/camera/depth_image" />  
   -->
 
+  <!-- Sonar Image Simulator -->
+  <node name="imaging_sonar_sim" pkg="imaging_sonar_sim" type="imaging_sonar_sim" output="screen" />
+
+  <!-- Display sonar image -->
+  <node name="sonar_image" pkg="image_view" type="image_view" args="image:=sonar_image">
+    <param name="autosize" type="bool" value="true"/>
+    <param name="window_name" value="Imaging Sonar"/>
+  </node>
+  
   
   <group if="$(arg rviz)">
     <include file="$(find eye_description)/launch/rviz.launch"/>

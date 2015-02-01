@@ -7,7 +7,6 @@ Panels:
         - /Global Options1
         - /Status1
         - /PointCloud1
-        - /PointCloud1/Status1
       Splitter Ratio: 0.487805
     Tree Height: 517
   - Class: rviz/Selection
@@ -158,7 +157,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.01761
+      Distance: 2.49445
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1

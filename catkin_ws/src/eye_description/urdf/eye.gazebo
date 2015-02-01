@@ -53,8 +53,7 @@
           <resolution>0.01</resolution>
         </range>
       </ray>
-      
-      
+            
       <plugin name="gazebo_ros_imaging_sonar_controller" filename="libimaging_sonar.so">
         <alwaysOn>true</alwaysOn>
         <updateRate>30.0</updateRate>

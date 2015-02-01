@@ -1,0 +1,29 @@
+<launch>
+
+  <arg name="gui" default="False" />
+
+  <!-- When playing back rosbag data, need to use_sim_time -->
+  <param name="use_sim_time" type="bool" value="true"/>
+
+  <param name="robot_description"
+    command="$(find xacro)/xacro.py '$(find eye_description)/urdf/eye.xacro'" />
+
+  <!-- Combine joint values -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+
+  <!-- Show in Rviz   -->  
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find eye_description)/launch/urdf.rviz" required="true" />
+
+  <!-- Sonar Image Simulator -->
+  <node name="imaging_sonar_sim" pkg="imaging_sonar_sim" type="imaging_sonar_sim" output="screen" />--
+
+  <!-- Display sonar image -->
+  <node name="sonar_image" pkg="image_view" type="image_view" args="image:=sonar_image">
+    <param name="autosize" type="bool" value="true"/>
+    <param name="window_name" value="Imaging Sonar"/>
+  </node>
+
+  <!-- start rosbag : have to use clock param for simulation-->  
+  <node name="rosbag" pkg="rosbag" type="play" args="/home/syllogismrxs/2015-01-29-11-34-47.bag --clock" />
+
+</launch>
