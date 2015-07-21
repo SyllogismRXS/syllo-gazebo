@@ -315,8 +315,7 @@ void ImagingSonar::PutLaserData(common::Time &_updateTime)
                intensity = 0.25*(this->parent_sensor_->GetLaserShape()->GetRetro(j1) +
                                  this->parent_sensor_->GetLaserShape()->GetRetro(j2) +
                                  this->parent_sensor_->GetLaserShape()->GetRetro(j3) +
-                                 this->parent_sensor_->GetLaserShape()->GetRetro(j4));      
-
+                                 this->parent_sensor_->GetLaserShape()->GetRetro(j4));                     
 
                // std::cout << " block debug "
                //           << "  ij("<<i<<","<<j<<")"

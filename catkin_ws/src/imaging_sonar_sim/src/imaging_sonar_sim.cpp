@@ -66,6 +66,18 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
           //cloud_.points[i].z += gauss_sample();
      }     
 
+     // DEBUG OUTPUT
+     //cout << "Channels: " << cloud_.channels.size() << endl;
+     //for (unsigned int i = 0; i < cloud_.channels.size(); i++) {
+     //     cout << endl << "---------------" << endl;
+     //     cout << "Channel: " << i << endl;
+     //     cout << "Name: " << cloud_.channels[i].name << endl;
+     //     cout << "Values: ";
+     //     for(unsigned int j = 0; j < cloud_.channels[i].values.size(); j++) {
+     //          cout << cloud_.channels[i].values[j] << ", ";
+     //     }
+     //}
+
      /////////////////////////////////////////////
      // Convert range data to opencv image
      /////////////////////////////////////////////
@@ -126,7 +138,18 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
                cout << "bounds" << endl;
                continue;
           }          
-          cv::circle(img,cv::Point(x_pos, y_pos),1,cv::Scalar(255,255,255),1,8,0);
+          double retro = cloud_.channels[0].values[i];
+          if (retro > 255) { 
+               retro = 255;
+          } else if (retro < 0) {
+               retro = 0;
+          }
+          
+          int R = retro;
+          int G = retro;
+          int B = retro;
+          //cout << retro << ", ";
+          cv::circle(img,cv::Point(x_pos, y_pos),1,cv::Scalar(B,G,R),1,8,0);
      }
 
      cv::Point center = cv::Point( img.cols/2, img.rows/2 );
