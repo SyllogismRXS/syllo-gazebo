@@ -290,7 +290,7 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='eye'>
+    <!--<model name='eye'>
       <link name='base_link'>
         <pose>0 0 0 0 -0 0</pose>
         <inertial>
@@ -530,6 +530,7 @@
       </plugin>
       <pose>0 0 1.5 0 -0 0</pose>
     </model>
+    -->
     <model name='r2'>
       <link name='/r2/robot_world'>
         <pose>0 0 0 0 -0 0</pose>
