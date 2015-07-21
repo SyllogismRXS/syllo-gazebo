@@ -1,0 +1,2 @@
+I put the ocean_floor_1 directory under ~/.gazebo/models
+
