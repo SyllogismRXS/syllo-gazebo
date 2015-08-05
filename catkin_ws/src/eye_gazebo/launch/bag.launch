@@ -1,0 +1,42 @@
+<launch>
+
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="rviz" default="false"/>
+
+  <!-- ROV Camera -->
+  <node pkg="image_view" name="image_view"  type="image_view" 
+        args="image:=/eye/camera1/image_raw" />    
+
+  <!-- Sonar Image Simulator -->
+  <node name="imaging_sonar_sim" pkg="imaging_sonar_sim" type="imaging_sonar_sim" output="screen" />
+
+  <!-- Display sonar image -->
+  <node name="sonar_image" pkg="image_view" type="image_view" args="image:=sonar_image">
+    <param name="autosize" type="bool" value="true"/>
+    <param name="window_name" value="Imaging Sonar"/>
+  </node>
+  
+  <node pkg="rosbag" name="play" type="play" args="/home/syllogismrxs/2015-08-05-12-48-42.bag" />
+  
+  <group if="$(arg rviz)">
+    <include file="$(find eye_description)/launch/rviz.launch"/>
+  </group>
+
+  <!-- IAUV Dynamics : Requres UWSim -->
+  <!--  
+  <include file="$(find underwater_vehicle_dynamics)/launch/dynamics.launch">
+    <arg name="namespace" value="g500" />
+    <arg name="params" value="$(find underwater_vehicle_dynamics)/config/dynamics_g500.yaml" />
+  </include>
+  <rosparam param="/g500/dynamics/external_force_topic">g500/ForceSensor</rosparam>  
+
+  <arg name="thrusters_topic" default="/g500/thrusters_input" />
+  <node name="keyboard_command" pkg="underwater_vehicle_dynamics" type="keyboard.py" args="$(arg thrusters_topic)" output="screen" respawn="false"/>
+  -->  
+
+</launch>

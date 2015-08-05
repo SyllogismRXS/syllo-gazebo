@@ -44,6 +44,8 @@
             <resolution>1</resolution>
             <min_angle>-0.174532778</min_angle>
             <max_angle>0.174532778</max_angle>
+            <!--<min_angle>-0.-39</min_angle>
+            <max_angle>0.39</max_angle>-->
           </vertical>          
         </scan>
 
