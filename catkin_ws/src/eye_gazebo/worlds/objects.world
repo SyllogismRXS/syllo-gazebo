@@ -17,6 +17,7 @@
       <static>1</static>
       <link name='link'>
         <collision name='collision'>
+          <laser_retro>50</laser_retro>
           <geometry>
             <plane>
               <normal>0 0 1</normal>
@@ -94,6 +95,7 @@
           </inertia>
         </inertial>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.46 0 -0 0</pose>
           <geometry>
             <mesh>
@@ -137,6 +139,7 @@
       <static>1</static>
       <link name='link'>
         <collision name='surface'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 1 0 -0 0</pose>
           <geometry>
             <box>
@@ -172,6 +175,7 @@
           </material>
         </visual>
         <collision name='front_left_leg'>
+          <laser_retro>255</laser_retro>
           <pose>0.68 0.38 0.5 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -206,6 +210,7 @@
           </material>
         </visual>
         <collision name='front_right_leg'>
+          <laser_retro>255</laser_retro>
           <pose>0.68 -0.38 0.5 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -225,6 +230,7 @@
           </surface>
         </collision>
         <visual name='front_right_leg'>
+          <laser_retro>255</laser_retro>
           <pose>0.68 -0.38 0.5 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -240,6 +246,7 @@
           </material>
         </visual>
         <collision name='back_right_leg'>
+          <laser_retro>255</laser_retro>
           <pose>-0.68 -0.38 0.5 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -274,6 +281,7 @@
           </material>
         </visual>
         <collision name='back_left_leg'>
+          <laser_retro>255</laser_retro>
           <pose>-0.68 0.38 0.5 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -317,6 +325,7 @@
       <static>1</static>
       <link name='link'>
         <collision name='surface'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 1 0 -0 0</pose>
           <geometry>
             <box>
@@ -352,6 +361,7 @@
           </material>
         </visual>
         <collision name='front_left_leg'>
+          <laser_retro>255</laser_retro>
           <pose>0.68 0.38 0.5 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -386,6 +396,7 @@
           </material>
         </visual>
         <collision name='front_right_leg'>
+          <laser_retro>255</laser_retro>
           <pose>0.68 -0.38 0.5 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -420,6 +431,7 @@
           </material>
         </visual>
         <collision name='back_right_leg'>
+          <laser_retro>255</laser_retro>
           <pose>-0.68 -0.38 0.5 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -454,6 +466,7 @@
           </material>
         </visual>
         <collision name='back_left_leg'>
+          <laser_retro>255</laser_retro>
           <pose>-0.68 0.38 0.5 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -497,6 +510,7 @@
       <link name='chassis'>
         <pose>0 0 0.3 0 -0 0</pose>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <box>
               <size>2 1 0.2</size>
@@ -544,6 +558,7 @@
       <link name='front_left_wheel'>
         <pose>0.8 0.6 0.3 0 1.5707 1.5707</pose>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <cylinder>
               <radius>0.3</radius>
@@ -593,6 +608,7 @@
       <link name='front_right_wheel'>
         <pose>0.8 -0.6 0.3 0 1.5707 1.5707</pose>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <cylinder>
               <radius>0.3</radius>
@@ -642,6 +658,7 @@
       <link name='back_right_wheel'>
         <pose>-0.8 -0.6 0.3 0 1.5707 1.5707</pose>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <cylinder>
               <radius>0.3</radius>
@@ -691,6 +708,7 @@
       <link name='back_left_wheel'>
         <pose>-0.8 0.6 0.3 0 1.5707 1.5707</pose>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <cylinder>
               <radius>0.3</radius>
@@ -740,6 +758,7 @@
       <link name='gas_pedal'>
         <pose>0.3 0.1 0.5 0 -0 0</pose>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <box>
               <size>0.1 0.1 0.1</size>
@@ -787,6 +806,7 @@
       <link name='brake_pedal'>
         <pose>0.3 0.25 0.5 0 -0 0</pose>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <box>
               <size>0.1 0.1 0.1</size>
@@ -834,6 +854,7 @@
       <link name='steering_wheel'>
         <pose>0.3 0.2 1 0 1.5707 0</pose>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <cylinder>
               <radius>0.1</radius>
@@ -1087,6 +1108,7 @@
           </inertia>
         </inertial>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.46 0 -0 0</pose>
           <geometry>
             <mesh>
@@ -1141,6 +1163,7 @@
           </inertia>
         </inertial>
         <collision name='collision'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.46 0 -0 0</pose>
           <geometry>
             <mesh>
@@ -1202,6 +1225,7 @@
           </geometry>
         </visual>
         <collision name='left'>
+          <laser_retro>255</laser_retro>
           <pose>0 -0.08465 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1226,6 +1250,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <collision name='right'>
+          <laser_retro>255</laser_retro>
           <pose>0 0.08465 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1250,6 +1275,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <collision name='front'>
+          <laser_retro>255</laser_retro>
           <pose>0.18625 0 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1274,6 +1300,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <collision name='middle'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1298,6 +1325,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <collision name='back'>
+          <laser_retro>255</laser_retro>
           <pose>-0.18625 0 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1349,6 +1377,7 @@
           </geometry>
         </visual>
         <collision name='left'>
+          <laser_retro>255</laser_retro>
           <pose>0 -0.08465 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1373,6 +1402,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <collision name='right'>
+          <laser_retro>255</laser_retro>
           <pose>0 0.08465 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1397,6 +1427,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <collision name='front'>
+          <laser_retro>255</laser_retro>
           <pose>0.18625 0 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1421,6 +1452,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <collision name='middle'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1445,6 +1477,7 @@
           <max_contacts>10</max_contacts>
         </collision>
         <collision name='back'>
+          <laser_retro>255</laser_retro>
           <pose>-0.18625 0 0.1016 0 -0 0</pose>
           <geometry>
             <box>
@@ -1489,6 +1522,7 @@
           <mass>10</mass>
         </inertial>
         <collision name='hip_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 0.125 0 -0 0</pose>
           <geometry>
             <box>
@@ -1552,6 +1586,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='l_thigh_pan_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.03 0 -0 0</pose>
           <geometry>
             <sphere>
@@ -1615,6 +1650,7 @@
           <mass>5</mass>
         </inertial>
         <collision name='l_thigh_lift_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.35 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -1680,6 +1716,7 @@
           <mass>2</mass>
         </inertial>
         <collision name='l_calf_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.3 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -1745,6 +1782,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='l_ankle_geom'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <sphere>
               <radius>0.05</radius>
@@ -1807,6 +1845,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='l_foot_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0.1 0 -0.025 0 -0 0</pose>
           <geometry>
             <box>
@@ -1870,6 +1909,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='r_thigh_pan_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.03 0 -0 0</pose>
           <geometry>
             <sphere>
@@ -1933,6 +1973,7 @@
           <mass>5</mass>
         </inertial>
         <collision name='r_thigh_lift_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.35 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -1998,6 +2039,7 @@
           <mass>2</mass>
         </inertial>
         <collision name='r_calf_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.3 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -2063,6 +2105,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='r_ankle_geom'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <sphere>
               <radius>0.05</radius>
@@ -2125,6 +2168,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='r_foot_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0.1 0 -0.025 0 -0 0</pose>
           <geometry>
             <box>
@@ -2188,6 +2232,7 @@
           <mass>30</mass>
         </inertial>
         <collision name='torso_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 0.35 0 -0 0</pose>
           <geometry>
             <box>
@@ -2251,6 +2296,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='l_shoulder_geom'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <sphere>
               <radius>0.055</radius>
@@ -2312,6 +2358,7 @@
           <mass>2</mass>
         </inertial>
         <collision name='l_upper_arm_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.3 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -2377,6 +2424,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='l_forearm_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.225 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -2442,6 +2490,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='l_wrist_geom'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <sphere>
               <radius>0.03</radius>
@@ -2503,6 +2552,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='l_hand_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.1 0 -0 0</pose>
           <geometry>
             <box>
@@ -2566,6 +2616,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='neck_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 0.1 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -2631,6 +2682,7 @@
           <mass>10</mass>
         </inertial>
         <collision name='head_geom'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <sphere>
               <radius>0.15</radius>
@@ -2692,6 +2744,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='r_shoulder_geom'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <sphere>
               <radius>0.055</radius>
@@ -2753,6 +2806,7 @@
           <mass>2</mass>
         </inertial>
         <collision name='r_upper_arm_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.3 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -2818,6 +2872,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='r_forearm_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.225 0 -0 0</pose>
           <geometry>
             <cylinder>
@@ -2883,6 +2938,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='r_wrist_geom'>
+          <laser_retro>255</laser_retro>
           <geometry>
             <sphere>
               <radius>0.03</radius>
@@ -2944,6 +3000,7 @@
           <mass>1</mass>
         </inertial>
         <collision name='r_hand_geom'>
+          <laser_retro>255</laser_retro>
           <pose>0 0 -0.1 0 -0 0</pose>
           <geometry>
             <box>
