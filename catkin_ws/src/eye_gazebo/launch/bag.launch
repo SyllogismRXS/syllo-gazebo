@@ -7,6 +7,7 @@
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
   <arg name="rviz" default="false"/>
+  <arg name="bag" default="/home/syllogismrxs/2015-08-06-18-26-42.bag"/>
 
   <!-- ROV Camera -->
   <node pkg="image_view" name="image_view"  type="image_view" 
@@ -21,7 +22,7 @@
     <param name="window_name" value="Imaging Sonar"/>
   </node>
   
-  <node pkg="rosbag" name="play" type="play" args="/home/syllogismrxs/2015-08-05-12-48-42.bag" />
+  <node pkg="rosbag" name="play" type="play" args="$(arg bag)" />
   
   <group if="$(arg rviz)">
     <include file="$(find eye_description)/launch/rviz.launch"/>

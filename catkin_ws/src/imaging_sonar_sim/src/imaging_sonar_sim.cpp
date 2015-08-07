@@ -22,6 +22,20 @@
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
 
+#include <pcl/point_types.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/kdtree/kdtree_flann.h>
+#include <pcl/features/normal_3d.h>
+#include <pcl/surface/gp3.h>
+#include <pcl/io/vtk_io.h>
+
+#include <pcl_conversions/pcl_conversions.h>
+#include <pcl/PCLPointCloud2.h>
+//#include <pcl/PCLPointCloud.h>
+#include <pcl/conversions.h>
+#include <pcl_ros/transforms.h>
+#include <sensor_msgs/point_cloud_conversion.h>
+
 using std::cout;
 using std::endl;
 
@@ -188,13 +202,18 @@ int scale(double c)
    the range [vmin,vmax]
 */
 
-typedef struct color{
-    double r,g,b;
-} color_t;
+//typedef struct{
+//    double r,g,b;
+//} color_t;
+struct color_t {
+     double r;
+     double g;
+     double b;
+};
 
-color_t GetColor(double v,double vmin,double vmax)
+struct color_t GetColor(double v, double vmin, double vmax)
 {
-   color_t c = {1.0,1.0,1.0}; // white
+   struct color_t c = {1.0,1.0,1.0}; // white
    double dv;
 
    if (v < vmin)
@@ -245,9 +264,9 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
      for (unsigned int i = 0; i < cloud_.points.size(); i++) {
           cloud_.points[i].x += gauss_sample();
      }     
-
+     
      double x_min = 0.1;
-     double x_max = 30.0;
+     double x_max = 10.0;
      double y_min = 0;
      double y_max = sin(0.392699082)*x_max*2;
      
@@ -282,9 +301,117 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
      int npts = cv::Mat(contour).rows;
 
      // Fill the polygon with "empty" "blue" returns     
-     color_t color = GetColor(0,0,255);     
+     struct color_t color = GetColor(0,0,255);     
      cv::fillPoly(img, &pts, &npts, 1, cv::Scalar(scale(color.b), scale(color.g), scale(color.r)), 8, 0, cv::Point(0,0));
-                  
+   
+#if 1
+     sensor_msgs::PointCloud2 sm_pcl2;
+     sensor_msgs::convertPointCloudToPointCloud2(cloud_, sm_pcl2);
+     
+     pcl::PCLPointCloud2 pcl_pc2;
+     pcl_conversions::toPCL(sm_pcl2, pcl_pc2);
+     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
+     pcl::fromPCLPointCloud2(pcl_pc2, *cloud);
+     
+     // Normal estimation*
+     pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> n;
+     pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
+     pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
+     tree->setInputCloud (cloud);
+     n.setInputCloud (cloud);
+     n.setSearchMethod (tree);
+     n.setKSearch (20);
+     n.compute (*normals);
+
+     // Concatenate the XYZ and normal fields*
+     pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
+     pcl::concatenateFields (*cloud, *normals, *cloud_with_normals);
+     //* cloud_with_normals = cloud + normals
+     
+     // Create search tree*
+     pcl::search::KdTree<pcl::PointNormal>::Ptr tree2 (new pcl::search::KdTree<pcl::PointNormal>);
+     tree2->setInputCloud (cloud_with_normals);
+
+     // Initialize objects
+     pcl::GreedyProjectionTriangulation<pcl::PointNormal> gp3;
+     pcl::PolygonMesh triangles;
+
+     // Set the maximum distance between connected points (maximum edge length)
+     //gp3.setSearchRadius (0.025);
+     gp3.setSearchRadius (15);
+
+     // Set typical values for the parameters
+     gp3.setMu (2.5);
+     gp3.setMaximumNearestNeighbors (100);
+     gp3.setMaximumSurfaceAngle(M_PI/4); // 45 degrees
+     gp3.setMinimumAngle(M_PI/18); // 10 degrees
+     gp3.setMaximumAngle(2*M_PI/3); // 120 degrees
+     gp3.setNormalConsistency(false);
+
+     // Get result
+     gp3.setInputCloud (cloud_with_normals);
+     gp3.setSearchMethod (tree2);
+     gp3.reconstruct (triangles);
+
+     // Additional vertex information
+     //std::vector<int> parts = gp3.getPartIDs();
+     //std::vector<int> states = gp3.getPointStates();                    
+
+     struct color_t mycolor;
+     int B,G,R;
+
+     std::vector<pcl::Vertices>::iterator it = triangles.polygons.begin();
+     for(; it != triangles.polygons.end(); it++) {
+          pcl::Vertices verts = *it;                    
+          
+          std::vector<uint32_t>::iterator it2 = verts.vertices.begin();          
+          int count = 0;
+          double retro_sum = 0;
+          cv::Point points[0][3];
+          for (; it2 != verts.vertices.end(); it2++) {
+               int x_pos = img_width/2 + -cloud->points[*it2].y / (y_max/2) * img_height*sin(0.392699082);
+               int y_pos = cloud->points[*it2].x / x_max * img_height;               
+               
+               points[0][count++] = cv::Point( x_pos, y_pos );               
+               
+               retro_sum += cloud_.channels[0].values[*it2];
+               
+               mycolor = GetColor(cloud_.channels[0].values[*it2], 0, 255);
+               R = scale(mycolor.r);
+               G = scale(mycolor.g);
+               B = scale(mycolor.b);
+               
+               cv::circle(img,cv::Point(x_pos, y_pos),1,cv::Scalar(B,G,R),1,8,0);
+          }                    
+          
+          const cv::Point* ppt[1] = { points[0] };
+          int npt[] = { 3 };
+          
+          double retro = retro_sum / 3.0;
+          if (retro > 255) { 
+               retro = 255;
+          } else if (retro < 0) {
+               retro = 0;
+          }
+          
+          mycolor = GetColor(retro, 0, 255);
+          R = scale(mycolor.r);
+          G = scale(mycolor.g);
+          B = scale(mycolor.b);
+                    
+          //cout << B << "," << G << "," << R << endl;                    
+
+          cv::fillPoly( img,
+                        ppt,
+                        npt,
+                        1,
+                        cv::Scalar(B,G,R),
+                        8,
+                        0,
+                        cv::Point(0,0));
+     }                    
+     
+#else             
      // Add the returned values
      for (unsigned int i = 0; i < cloud_.points.size(); i++) {          
 
@@ -320,6 +447,9 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
           //cout << retro << ", ";
           cv::circle(img,cv::Point(x_pos, y_pos),1,cv::Scalar(B,G,R),1,8,0);
      }
+#endif
+
+     cv::medianBlur(img,img,11);
      
      // Rotate the sonar image to pointing "up"
      cv::Point center = cv::Point( img.cols/2, img.rows/2 );
@@ -337,8 +467,7 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
                                                         "bgr8",
                                                         img).toImageMsg();
      
-     img_pub_.publish(img_msg);
-     
+     img_pub_.publish(img_msg);          
 }
 
 int main(int argc, char * argv[])
@@ -347,14 +476,13 @@ int main(int argc, char * argv[])
      ros::NodeHandle n_;
      image_transport::ImageTransport it_(n_);
 
-     ros::Subscriber cloud_sub = n_.subscribe<sensor_msgs::PointCloud>("sonar_cloud", 1, cloudCallback);     
+     ros::Subscriber cloud_sub = n_.subscribe<sensor_msgs::PointCloud>("sonar_cloud", 0, cloudCallback);
      img_pub_ = it_.advertise("sonar_image", 1);         
      
      ros::Rate loop_rate(10);     
      while (ros::ok()) {                    
-
           ros::spinOnce();
-          loop_rate.sleep();
+          //loop_rate.sleep();
      }
 
      return 0;
