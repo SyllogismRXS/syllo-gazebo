@@ -7,7 +7,7 @@
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
   <arg name="rviz" default="false"/>
-  <arg name="bag" default="/home/syllogismrxs/2015-08-06-18-26-42.bag"/>
+  <arg name="bag" default="/home/syllogismrxs/2015-08-07-13-56-47.bag"/>
 
   <!-- ROV Camera -->
   <node pkg="image_view" name="image_view"  type="image_view" 
