@@ -34,20 +34,42 @@
       <ray>
         <scan>
           <horizontal>
-            <!--<samples>640</samples>-->
+            
+            
             <samples>280</samples>
-            <resolution>1</resolution>
+            <resolution>1</resolution>            
             <min_angle>-0.39269875</min_angle>
             <max_angle>0.39269875</max_angle>
+            
+            <!--
+            <samples>1</samples>
+            <resolution>1</resolution>            
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+            -->            
+            <!-- 130 degree
+            <min_angle>-1.134464014</min_angle>
+            <max_angle>1.134464014</max_angle>
+            -->
           </horizontal>        
           <vertical>
-            <!--<samples>32</samples>-->
+            
             <samples>70</samples>
-            <resolution>1</resolution>
+            <resolution>1</resolution>            
             <min_angle>-0.174532778</min_angle>
             <max_angle>0.174532778</max_angle>
-            <!--<min_angle>-0.-39</min_angle>
-            <max_angle>0.39</max_angle>-->
+            
+            <!--
+            <samples>1</samples>
+            <resolution>1</resolution>            
+            <min_angle>0</min_angle>
+            <max_angle>0</max_angle>
+            -->
+
+            <!--
+            <min_angle>-0.274532778</min_angle>
+            <max_angle>0.274532778</max_angle>
+            -->
           </vertical>          
         </scan>
 

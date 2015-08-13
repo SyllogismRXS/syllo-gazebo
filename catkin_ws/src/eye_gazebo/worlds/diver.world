@@ -58,7 +58,7 @@
       </attenuation>
       <direction>-0.5 0.1 -0.9</direction>
     </light>
-    <model name='pylon'>
+    <model name='diver'>
       <static>1</static>
       <link name='link'>
         <collision name='collision'>
@@ -66,7 +66,7 @@
           <laser_retro>255</laser_retro>
           <geometry>
             <mesh>
-              <uri>model://pylon/meshes/pylon.dae</uri>
+              <uri>model://diver/meshes/diver.dae</uri>
             </mesh>
           </geometry>
           <surface>
@@ -87,7 +87,7 @@
           <pose>0 0 0 0 -0 0</pose>
           <geometry>
             <mesh>
-              <uri>model://pylon/meshes/pylon.dae</uri>
+              <uri>model://diver/meshes/diver.dae</uri>
             </mesh>
           </geometry>
         </visual>
@@ -118,49 +118,19 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
-    <model name='pylon_0'>
-      <static>1</static>
-      <link name='link'>
-        <collision name='collision'>
-          <pose>0 0 0 0 -0 0</pose>
-          <laser_retro>255</laser_retro>
-          <geometry>
-            <mesh>
-              <uri>model://pylon/meshes/pylon.dae</uri>
-            </mesh>
-          </geometry>
-          <surface>
-            <friction>
-              <ode>
-                <mu>100</mu>
-                <mu2>50</mu2>
-              </ode>
-            </friction>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-          </surface>
-          <max_contacts>10</max_contacts>
-        </collision>
-        <visual name='visual'>
-          <pose>0 0 0 0 -0 0</pose>
-          <geometry>
-            <mesh>
-              <uri>model://pylon/meshes/pylon.dae</uri>
-            </mesh>
-          </geometry>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <pose>-6 -6 0 0 -0 0</pose>
-    </model>
     <state world_name='default'>
-      <sim_time>1186 484000000</sim_time>
-      <real_time>32 588909837</real_time>
-      <wall_time>1439307275 366854120</wall_time>
+      <sim_time>37 320000000</sim_time>
+      <real_time>37 501596064</real_time>
+      <wall_time>1439308083 131688797</wall_time>
+      <model name='diver'>
+        <pose>0 0 2 0 -0 0</pose>
+        <link name='link'>
+          <pose>0 0 2 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
       <model name='ground_plane'>
         <pose>0 0 0 0 -0 0</pose>
         <link name='link'>
@@ -170,90 +140,13 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='pylon'>
-        <pose>0 0 0 0 -0 0</pose>
-        <link name='link'>
-          <pose>0 0 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='pylon_0'>
-        <pose>0 -2.5 0 0 -0 0</pose>
-        <link name='link'>
-          <pose>0 -2.5 0 0 -0 0</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='unit_box_1'>
-        <pose>0.409069 -1.5454 0.028046 -2.7e-05 -0 -1e-06</pose>
-        <link name='link'>
-          <pose>0.409069 -1.5454 0.028046 -2.7e-05 -0 -1e-06</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 0 0 -0 0</acceleration>
-          <wrench>0 0 0 0 -0 0</wrench>
-        </link>
-      </model>
       <iterations>0</iterations>
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose>-9.86224 1.12607 7.39913 -3.22948e-17 0.536614 -0.326115</pose>
+        <pose>7.53111 0.667398 3.04938 8.96497e-19 0.255643 -3.11899</pose>
         <view_controller>orbit</view_controller>
       </camera>
     </gui>
-    <model name='unit_box_1'>
-      <pose>0 -1 0.5 0 -0 0</pose>
-      <link name='link'>
-        <inertial>
-          <mass>1</mass>
-          <inertia>
-            <ixx>1</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>1</iyy>
-            <iyz>0</iyz>
-            <izz>1</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <laser_retro>255</laser_retro>
-          <geometry>
-            <box>
-              <size>0.353555 0.185816 0.056088</size>
-            </box>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <box>
-              <size>0.585301 0.394806 0.586764</size>
-            </box>
-          </geometry>
-          <material>
-            <script>
-              <uri>file://media/materials/scripts/gazebo.material</uri>
-              <name>Gazebo/Grey</name>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-    </model>
   </world>
 </sdf>

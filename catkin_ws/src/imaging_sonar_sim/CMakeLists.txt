@@ -13,7 +13,10 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   pcl_ros
+  cmake_modules
 )
+
+find_package(TinyXML REQUIRED)
 
 find_package(OpenCV)
 include_directories(${OpenCV_INCLUDE_DIRS})
@@ -92,6 +95,11 @@ catkin_package(
 #  LIBRARIES imaging_sonar_sim
 #  CATKIN_DEPENDS cv_bridge geometry_msgs image_transport roscpp sensor_msgs std_msgs tf
 #  DEPENDS system_lib
+LIBRARIES
+INCLUDE_DIRS
+include
+DEPENDS
+TinyXML
 )
 
 ###########
@@ -103,6 +111,7 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${TinyXML_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -122,6 +131,7 @@ add_dependencies(${NODE_NAME_1} imaging_sonar_sim_generate_messages_cpp)
 target_link_libraries( ${NODE_NAME_1}
    ${catkin_LIBRARIES}
    ${OpenCV_LIBRARIES}
+   ${TinyXML_LIBRARIES}
    )
 
 #############

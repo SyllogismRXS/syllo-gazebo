@@ -42,6 +42,8 @@
 #include <pcl_ros/transforms.h>
 #include <sensor_msgs/point_cloud_conversion.h>
 
+#include <tinyxml.h>
+
 using std::cout;
 using std::endl;
 
@@ -86,6 +88,11 @@ void add_salt_and_pepper(cv::Mat& I, int amt)
      }}    
 }
 
+
+double min_angle_;
+double max_angle_;
+double beam_width_;
+
 void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
 {
      cloud_in_ = *msg;
@@ -112,12 +119,14 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
           cloud_.points[i].x += gauss_sample();
      }     
      
-     double x_min = 0.1;
-     double x_max = 10.0;
-     double y_min = 0;
-     double y_max = sin(0.392699082)*x_max*2;
+     double x_min = 0.1;  // R_min
+     double x_max = 10.0; // R_max
+     double y_min = 0;    // 
+     //double y_max = sin(0.392699082)*x_max*2;
+     double y_max = sin(max_angle_)*x_max*2;
      
      int img_width = 600;
+     //int img_width = 1500;
      int img_height = 600;
 
      cv::Mat img = cv::Mat::zeros(img_height, img_width, CV_8UC1);          
@@ -186,7 +195,8 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
           double retro_sum = 0;
           cv::Point points[0][3];
           for (; it2 != verts.vertices.end(); it2++) {
-               int x_pos = img_width/2 + -cloud->points[*it2].y / (y_max/2) * img_height*sin(0.392699082);
+               //int x_pos = img_width/2 + -cloud->points[*it2].y / (y_max/2) * img_height*sin(0.392699082);
+               int x_pos = img_width/2 + -cloud->points[*it2].y / (y_max/2) * img_height*sin(max_angle_);
                int y_pos = cloud->points[*it2].x / x_max * img_height;               
                
                points[0][count++] = cv::Point( x_pos, y_pos );               
@@ -227,10 +237,11 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
                cout << "Over y_max: " << cloud_.points[i].y << endl;
           }
           
-          int x_pos = img_width/2 + -cloud_.points[i].y / (y_max/2) * img_height*sin(0.392699082);
+          //int x_pos = img_width/2 + -cloud_.points[i].y / (y_max/2) * img_height*sin(0.392699082);
+          int x_pos = img_width/2 + -cloud_.points[i].y / (y_max/2) * img_height*sin(max_angle_);
           int y_pos = cloud_.points[i].x / x_max * img_height;
                     
-          if (x_pos < 0 || x_pos > img.rows || y_pos < 0 || y_pos > img.cols) {
+          if (x_pos < 0 || x_pos > img.cols || y_pos < 0 || y_pos > img.rows) {
                // error, skip
                cout << "bounds" << endl;
                continue;
@@ -265,7 +276,9 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
      cv::applyColorMap(img,img_color,cv::COLORMAP_JET);    
      ///////////////////////////////
 
-     double start_angle = 1.178097245;
+     //double start_angle = 1.178097245;
+     
+     double start_angle = (PI - beam_width_) / 2 ;
      double end_angle = 90.0 * PI / 180.0;//1.963495408;
      cv::Point start(img_width/2,0);
      cv::Point end_1(start.x+img_height*cos(start_angle), start.y+img_height*sin(start_angle));
@@ -295,7 +308,8 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
 
      ///////////////////
 
-     start_angle = 112.5  * PI / 180.0;
+     //start_angle = 112.5  * PI / 180.0;
+     start_angle = ((PI - beam_width_) / 2) + beam_width_;
      end_angle = 90 * PI / 180.0;//1.963495408;
      end_1 = cv::Point(start.x+img_height*cos(start_angle), start.y+img_height*sin(start_angle));
      end_2 = cv::Point(start.x+img_height*cos(end_angle), start.y+img_height*sin(end_angle));
@@ -343,16 +357,57 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
      
      img_pub_.publish(img_msg);          
 }
-
+          
 int main(int argc, char * argv[])
 {               
      srand (time(NULL));
 
      ros::init(argc, argv, "imaging_sonar_sim");
      ros::NodeHandle n_;
-     image_transport::ImageTransport it_(n_);
 
+     std::string key;
+     std::string robot_description;
+     if (n_.searchParam("robot_description", key)) {
+          n_.getParam(key, robot_description);
+     } else {
+          cout << "===========================" << endl;
+          cout << "Warning: unable to find robot_description." << endl;
+     }     
+
+     // Need to extract the min and max angles for sonar point cloud
+     TiXmlDocument doc;
+     const char* pTest = doc.Parse(robot_description.c_str(), 0 , TIXML_ENCODING_UTF8);
+     if(pTest != NULL){
+          cout << "Error parsing robot_description" << endl;
+     }
+     TiXmlElement * robot_element = doc.FirstChildElement("robot");
+     // Search for gazebo with reference="sonar_link"
+     TiXmlElement *elem = robot_element->FirstChildElement();
+     TiXmlElement *sonar_link_elem;
+     while (elem) {
+          if (std::string(elem->Value()) == "gazebo") {
+               if (elem->Attribute("reference") != NULL) {
+                    if (std::string(elem->Attribute("reference")) == "sonar_link") {
+                         sonar_link_elem = elem;
+                         break;
+                    }
+               }
+          }
+          elem = elem->NextSiblingElement();
+     }
+     TiXmlElement *min_angle_elem = sonar_link_elem->FirstChildElement("sensor")->FirstChildElement("ray")->FirstChildElement("scan")->FirstChildElement("horizontal")->FirstChildElement("min_angle");
+     TiXmlElement *max_angle_elem = sonar_link_elem->FirstChildElement("sensor")->FirstChildElement("ray")->FirstChildElement("scan")->FirstChildElement("horizontal")->FirstChildElement("max_angle");     
+     if ( ! (std::istringstream(min_angle_elem->GetText()) >> min_angle_) ) min_angle_ = -1;
+     if ( ! (std::istringstream(max_angle_elem->GetText()) >> max_angle_) ) max_angle_ = 1;
+     cout << "Min Angle: " << min_angle_ << endl;
+     cout << "Max Angle: " << max_angle_ << endl;
+     beam_width_ = max_angle_ * 2;
+     
+     // Setup sonar cloud subscription     
      ros::Subscriber cloud_sub = n_.subscribe<sensor_msgs::PointCloud>("sonar_cloud", 0, cloudCallback);
+
+     // Setup sonar_image publication
+     image_transport::ImageTransport it_(n_);
      img_pub_ = it_.advertise("sonar_image", 1);         
      
      ros::Rate loop_rate(10);     

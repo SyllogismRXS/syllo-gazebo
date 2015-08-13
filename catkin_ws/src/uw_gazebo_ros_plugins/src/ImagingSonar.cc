@@ -384,9 +384,19 @@ void ImagingSonar::PutLaserData(common::Time &_updateTime)
                     //point.y = r * cos(pAngle) * sin(yAngle) + this->GaussianKernel(0,this->gaussian_noise_);
                     //point.z = -r * sin(pAngle) + this->GaussianKernel(0,this->gaussian_noise_);
         
+                    // pAngle: polar angle
+                    // yAngle: azimuthal angle
                     point.x = r * cos(pAngle) * cos(yAngle);
                     point.y = r * cos(pAngle) * sin(yAngle);
                     point.z = r * sin(pAngle);                        
+
+                    //point.x = r * sin(pAngle) * cos(yAngle);
+                    //point.y = r * sin(pAngle) * sin(yAngle);
+                    //point.z = r * cos(pAngle);                        
+
+                    //point.x = r * sin(yAngle) * cos(pAngle);
+                    //point.y = r * sin(yAngle) * sin(pAngle);
+                    //point.z = r * cos(yAngle);                        
         
                     this->cloud_msg_.points.push_back(point); 
                } // only 1 channel 

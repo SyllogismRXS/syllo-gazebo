@@ -49,6 +49,9 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>pcl_ros</build_depend>
+  <build_depend>cmake_modules</build_depend>
+  <build_depend>tinyxml</build_depend>
+  
   <run_depend>cv_bridge</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>image_transport</run_depend>
@@ -58,7 +61,8 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>pcl_ros</run_depend>
-
+  <run_depend>cmake_modules</run_depend>
+  <run_depend>tinyxml</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
