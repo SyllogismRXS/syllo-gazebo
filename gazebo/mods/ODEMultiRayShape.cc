@@ -186,7 +186,7 @@ void ODEMultiRayShape::UpdateCallback(void *_data, dGeomID _o1, dGeomID _o2)
           // Get ray vector
           math::Vector3 pos1, pos2;
           shape->GetGlobalPoints(pos1,pos2);
-          math::Vector3 ray_vec = pos2 - pos1;                    
+          math::Vector3 ray_vec = pos1 - pos2; //pos2 - pos1;                    
           
           dReal ray_mag = sqrt(pow(ray_vec.x,2) + 
                                pow(ray_vec.y,2) + 
@@ -200,11 +200,15 @@ void ODEMultiRayShape::UpdateCallback(void *_data, dGeomID _o1, dGeomID _o2)
           
           // Convert to degrees
           double deg = theta * 180.0 / 3.14159265359;
-          //double retro_orig = hitCollision->GetLaserRetro();
-          // Ignore the already defined laser retro value.
-          double retro_orig = 255;
+
+          //std::cout << "Angle: " << deg << std::endl;
+          
+          double retro_orig = hitCollision->GetLaserRetro();
+          //double retro_orig = 255;
           //double retro_degrade = retro_orig - retro_orig*(deg/180.0);
-          double retro_degrade = retro_orig*pow(deg/180.0,2);
+          
+          //double retro_degrade = retro_orig*pow(deg/180.0,2) * pow(ray_mag / self->GetMaxRange(),2);
+          double retro_degrade = retro_orig*cos(theta) * pow(ray_mag / self->GetMaxRange(),2);
           
           //std::cout << "Deg=" << deg << ", Orig=" << retro_orig << ", New=" << retro_degrade << std::endl;
           
