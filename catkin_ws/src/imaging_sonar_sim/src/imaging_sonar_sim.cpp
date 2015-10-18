@@ -18,6 +18,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/image_encodings.h>
+#include <sensor_msgs/CameraInfo.h>
 
 #include <tf/transform_listener.h>
 
@@ -44,6 +45,8 @@
 
 #include <tinyxml.h>
 
+#include "ColorMaps.h"
+
 using std::cout;
 using std::endl;
 
@@ -51,6 +54,12 @@ sensor_msgs::PointCloud cloud_in_;
 sensor_msgs::PointCloud cloud_;
 
 image_transport::Publisher img_pub_;
+
+ros::Publisher camera_info_pub_;
+sensor_msgs::CameraInfo camera_info_;
+
+//cv::VideoWriter record_;
+int frame_count = 0;
 
 #define PI 3.14159265359
 
@@ -129,9 +138,12 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
      //int img_width = 1500;
      int img_height = 600;
 
+     camera_info_.height = img_height;
+     camera_info_.width = img_width;
+     
      cv::Mat img = cv::Mat::zeros(img_height, img_width, CV_8UC1);          
      
-     add_salt_and_pepper(img, 10);
+     //add_salt_and_pepper(img, 10);
      
 #if 0
      sensor_msgs::PointCloud2 sm_pcl2;
@@ -257,7 +269,7 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
 #endif
 
      cv::medianBlur(img,img,3);
-     add_salt_and_pepper(img,20);
+     //add_salt_and_pepper(img,20);
      
      cv::Mat img_color;
      //cv::applyColorMap(img,img_color,cv::COLORMAP_JET);          
@@ -273,7 +285,8 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
      /// COLORMAP_SPRING
      /// COLORMAP_SUMMER
      /// COLORMAP_WINTER
-     cv::applyColorMap(img,img_color,cv::COLORMAP_JET);    
+     //cv::applyColorMap(img,img_color,cv::COLORMAP_JET);    
+     Gray2Jet_matlab(img, img_color);
      ///////////////////////////////
 
      //double start_angle = 1.178097245;
@@ -350,17 +363,36 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
      
      //cv::imshow("sonar_image",img);
      //cv::waitKey(1);          
+     std_msgs::Header img_header;
+     img_header.stamp = ros::Time::now();     
      
-     sensor_msgs::ImagePtr img_msg = cv_bridge::CvImage(std_msgs::Header(), 
+     sensor_msgs::ImagePtr img_msg = cv_bridge::CvImage(img_header, 
                                                         "bgr8",
                                                         img_color).toImageMsg();
      
-     img_pub_.publish(img_msg);          
+     camera_info_.header.stamp = img_header.stamp;
+          
+     camera_info_pub_.publish(camera_info_);
+     img_pub_.publish(img_msg);    
+
+     std::ostringstream convert;
+     convert << frame_count;
+     
+     std::string out_str = "/home/syllogismrxs/img_temp/sonar" + convert.str() + ".png";
+     cv::imwrite(out_str, img_color);
+     frame_count++;
+     //if (!record_.isOpened()) {
+     //     record_.open("/home/syllogismrxs/output.avi", CV_FOURCC('M','J','P','G'), 10, img_color.size(), true);
+     //}
+     //
+     //if (record_.isOpened()) {
+     //     record_ << img_color;
+     //}     
 }
           
 int main(int argc, char * argv[])
 {               
-     srand (time(NULL));
+     srand (time(NULL));     
 
      ros::init(argc, argv, "imaging_sonar_sim");
      ros::NodeHandle n_;
@@ -409,6 +441,8 @@ int main(int argc, char * argv[])
      // Setup sonar_image publication
      image_transport::ImageTransport it_(n_);
      img_pub_ = it_.advertise("sonar_image", 1);         
+     
+     camera_info_pub_ = n_.advertise<sensor_msgs::CameraInfo>("/camera_info", 1);     
      
      ros::Rate loop_rate(10);     
      while (ros::ok()) {                    

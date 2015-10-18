@@ -10,9 +10,9 @@
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/pylons.world"/>-->
+    <arg name="world_name" value="$(find eye_gazebo)/worlds/pylons.world"/>
     <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/diver.world"/>-->
-    <arg name="world_name" value="$(find eye_gazebo)/worlds/ragdoll.world"/>
+    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/ragdoll.world"/>-->
     <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/box.world"/>-->
     <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/empty.world"/>-->
     <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/objects.world"/>-->
@@ -43,7 +43,7 @@
 
   <!-- Keyboard Control -->
   <node ns="eye" name="velocity_control_node" pkg="keyboard_teleop" type="velocity_control" respawn="false" output="screen"
-	args="50 60" launch-prefix="xterm -e" />
+	args="5 5" launch-prefix="xterm -e" /> <!-- 50 60 00 -->
 
   <!-- ROV Camera -->
   <node pkg="image_view" name="image_view"  type="image_view" 

@@ -121,7 +121,7 @@ include_directories(
 
 ## Declare a cpp executable
 set(NODE_NAME_1 "imaging_sonar_sim")
-add_executable(${NODE_NAME_1} src/imaging_sonar_sim.cpp)
+add_executable(${NODE_NAME_1} src/imaging_sonar_sim.cpp src/ColorMaps.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
