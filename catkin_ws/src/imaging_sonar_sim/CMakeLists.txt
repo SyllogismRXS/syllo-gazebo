@@ -97,7 +97,7 @@ catkin_package(
 #  DEPENDS system_lib
 LIBRARIES
 INCLUDE_DIRS
-include
+#include
 DEPENDS
 TinyXML
 )

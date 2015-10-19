@@ -28,6 +28,10 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/normal_distribution.hpp>
 #include <boost/random/variate_generator.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+
+namespace fs = boost::filesystem;
 
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
@@ -60,6 +64,7 @@ sensor_msgs::CameraInfo camera_info_;
 
 //cv::VideoWriter record_;
 int frame_count = 0;
+std::string output_dir = "/home/syllogismrxs/temp/sonar";
 
 #define PI 3.14159265359
 
@@ -378,7 +383,7 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
      std::ostringstream convert;
      convert << frame_count;
      
-     std::string out_str = "/home/syllogismrxs/img_temp/sonar" + convert.str() + ".png";
+     std::string out_str = output_dir + "/sonar" + convert.str() + ".png";
      cv::imwrite(out_str, img_color);
      frame_count++;
      //if (!record_.isOpened()) {
@@ -406,6 +411,12 @@ int main(int argc, char * argv[])
           cout << "Warning: unable to find robot_description." << endl;
      }     
 
+     // Create output directory for sonar images if it doesn't exist
+     fs::path dir(output_dir);
+     if (!fs::is_directory(dir)) {
+          fs::create_directories(output_dir);
+     }     
+     
      // Need to extract the min and max angles for sonar point cloud
      TiXmlDocument doc;
      const char* pTest = doc.Parse(robot_description.c_str(), 0 , TIXML_ENCODING_UTF8);

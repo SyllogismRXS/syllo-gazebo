@@ -43,7 +43,7 @@
 
   <!-- Keyboard Control -->
   <node ns="eye" name="velocity_control_node" pkg="keyboard_teleop" type="velocity_control" respawn="false" output="screen"
-	args="5 5" launch-prefix="xterm -e" /> <!-- 50 60 00 -->
+	args="1 1" launch-prefix="xterm -e" /> <!-- 50 60 00 -->
 
   <!-- ROV Camera -->
   <node pkg="image_view" name="image_view"  type="image_view" 
