@@ -40,27 +40,24 @@ int main(int argc, char **argv)
      ros::init(argc, argv, "velocity_control_node");
      ros::NodeHandle n_;
 
+     double linear_mag;
+     double angular_mag;     
+     std::string model_name = "EMPTY_MODEL_NAME";
+     
+     n_.param<double>("linear_mag", linear_mag, 1.0);
+     n_.param<double>("angular_mag", angular_mag, 1.0);
+     n_.param<std::string>("model_name", model_name, "eye");
+     
      // Notify roscore of joystick publication
      ros::Publisher twist_pub_ = n_.advertise<geometry_msgs::Twist>("vel_cmd", 1);     
 
      ros::ServiceClient client = n_.serviceClient<gazebo_msgs::GetModelState>("/gazebo/get_model_state"); 
      gazebo_msgs::GetModelState getmodelstate;
-     getmodelstate.request.model_name="eye";
+     getmodelstate.request.model_name=model_name;
 
      //ros::Rate loop_rate(10);
      bool quit = false;
      
-     double linear_mag = 1.0;
-     double angular_mag = 50.0;
-     if (argc >= 3) {          
-          linear_mag = atof(argv[1]);
-          angular_mag = atof(argv[2]);
-          //std::stringstream lin_mag_convert(std::string(argv[1]));
-          //std::stringstream ang_mag_convert(std::string(argv[2]));
-          //lin_mag_convert >> linear_mag;
-          //angular_mag_convert >> angular_mag;
-     }     
-
      Eigen::Quaternion<float> forward(0,0,0,0);
 
      cout << "Issue TWIST messages with W A S D and the arrow keys." << endl;
@@ -89,13 +86,19 @@ int main(int argc, char **argv)
           }                                        
           
           //Eigen::Quaternion<float> direction;
-
+          
           Eigen::Quaternion<float>::Vector3 direction(0,0,0);
           Eigen::Quaternion<float>::Vector3 rotation(0,0,0);          
 
           char c, c2;          
           c = getch();         
           switch(c) {
+          case 'q': 
+               direction = attitude._transformVector(Eigen::Quaternion<float>::Vector3(0,0,linear_mag));
+               break;
+          case 'z': 
+               direction = attitude._transformVector(Eigen::Quaternion<float>::Vector3(0,0,-linear_mag));
+               break;
           case 'w':
                direction = attitude._transformVector(Eigen::Quaternion<float>::Vector3(linear_mag,0,0));              
                     
@@ -117,12 +120,12 @@ int main(int argc, char **argv)
                
                //msg.linear.y = -linear_mag;
                break;
-          case 'q':
-               rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(angular_mag,0,0));
-               break;
-          case 'e':
-               rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(-angular_mag,0,0));
-               break;
+          //case 'q':
+          //     rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(angular_mag,0,0));
+          //     break;
+          //case 'e':
+          //     rotation = attitude._transformVector(Eigen::Quaternion<float>::Vector3(-angular_mag,0,0));
+          //     break;
           case 27:
                if (getch() == '[') {
                     c2 = getch();

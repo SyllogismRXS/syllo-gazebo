@@ -42,8 +42,12 @@
       args="-urdf -model eye -param robot_description -x -1 -y 0 -z 0.5" />-->
 
   <!-- Keyboard Control -->
-  <node ns="eye" name="velocity_control_node" pkg="keyboard_teleop" type="velocity_control" respawn="false" output="screen"
-	args="1 1" launch-prefix="xterm -e" /> <!-- 50 60 00 -->
+  <rosparam ns="eye" param="linear_mag">1.0</rosparam>
+  <rosparam ns="eye" param="angular_mag">1.0</rosparam>
+  <rosparam ns="eye" param="model_name">eye</rosparam>  
+  <node ns="eye" name="velocity_control_node" pkg="keyboard_teleop" 
+        type="velocity_control" respawn="false" output="screen"
+	launch-prefix="xterm -e" /> <!-- 50 60 00 -->
 
   <!-- ROV Camera -->
   <node pkg="image_view" name="image_view"  type="image_view" 
