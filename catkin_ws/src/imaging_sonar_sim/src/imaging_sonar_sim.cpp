@@ -107,6 +107,8 @@ double min_angle_;
 double max_angle_;
 double beam_width_;
 
+std::string sonar_link_name;
+
 void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
 {
      cloud_in_ = *msg;
@@ -114,7 +116,7 @@ void cloudCallback(const sensor_msgs::PointCloudConstPtr& msg)
      tf::TransformListener listener;
      tf::StampedTransform transform;
      try{
-          listener.transformPointCloud("sonar_link", cloud_in_, cloud_);
+          listener.transformPointCloud(sonar_link_name, cloud_in_, cloud_);
      }
      catch (tf::TransformException ex){
           ROS_ERROR("%s",ex.what());     
@@ -402,6 +404,8 @@ int main(int argc, char * argv[])
      ros::init(argc, argv, "imaging_sonar_sim");
      ros::NodeHandle n_;
 
+     ros::param::get("~sonar_link_name", sonar_link_name);
+
      std::string key;
      std::string robot_description;
      if (n_.searchParam("robot_description", key)) {
@@ -430,7 +434,7 @@ int main(int argc, char * argv[])
      while (elem) {
           if (std::string(elem->Value()) == "gazebo") {
                if (elem->Attribute("reference") != NULL) {
-                    if (std::string(elem->Attribute("reference")) == "sonar_link") {
+                    if (std::string(elem->Attribute("reference")) == sonar_link_name) {
                          sonar_link_elem = elem;
                          break;
                     }
@@ -445,20 +449,31 @@ int main(int argc, char * argv[])
      cout << "Min Angle: " << min_angle_ << endl;
      cout << "Max Angle: " << max_angle_ << endl;
      beam_width_ = max_angle_ * 2;
-     
+          
+     std::string cloud_topic_name;
+     ros::param::get("~cloud_topic_name", cloud_topic_name);
+          
      // Setup sonar cloud subscription     
-     ros::Subscriber cloud_sub = n_.subscribe<sensor_msgs::PointCloud>("sonar_cloud", 0, cloudCallback);
+     ros::Subscriber cloud_sub = n_.subscribe<sensor_msgs::PointCloud>(cloud_topic_name, 0, cloudCallback);
 
      // Setup sonar_image publication
+     std::string image_topic_name;
+     ros::param::get("~image_topic_name", image_topic_name);
+          
      image_transport::ImageTransport it_(n_);
-     img_pub_ = it_.advertise("sonar_image", 1);         
+     img_pub_ = it_.advertise(image_topic_name, 1);      
+
+     cout << "=======" << endl;
+     cout << "cloud name: " << cloud_topic_name << endl;
+     cout << "image name: " << image_topic_name << endl;
+     cout << "sonar link name: " << sonar_link_name << endl;
      
-     camera_info_pub_ = n_.advertise<sensor_msgs::CameraInfo>("/camera_info", 1);     
+     camera_info_pub_ = n_.advertise<sensor_msgs::CameraInfo>("camera_info", 1);     
      
      ros::Rate loop_rate(10);     
      while (ros::ok()) {                    
           ros::spinOnce();
-          //loop_rate.sleep();
+          loop_rate.sleep();
      }
 
      return 0;

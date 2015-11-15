@@ -53,13 +53,30 @@
   <node pkg="image_view" name="image_view"  type="image_view" 
         args="image:=/g500arm5/camera1/image_raw" />  
   
-  <!-- Sonar Image Simulator -->
-  <node name="imaging_sonar_sim" pkg="imaging_sonar_sim" type="imaging_sonar_sim" output="screen" />
+  <!-- Horizontal Sonar Image Simulator -->
+  <node name="imaging_sonar_sim" pkg="imaging_sonar_sim" type="imaging_sonar_sim" output="screen">
+    <param name="sonar_link_name" type="string" value="sonar_link"/>
+    <param name="cloud_topic_name" type="string" value="sonar_cloud"/>
+    <param name="image_topic_name" type="string" value="sonar_image"/>
+  </node>
 
-  <!-- Display sonar image -->
+  <!-- Horizontal Display sonar image -->
   <node name="sonar_image" pkg="image_view" type="image_view" args="image:=sonar_image">
     <param name="autosize" type="bool" value="true"/>
-    <param name="window_name" value="Imaging Sonar"/>
+    <param name="window_name" value="Horizontal Imaging Sonar"/>
+  </node>
+  
+  <!-- Vertical Sonar Image Simulator -->
+  <node name="imaging_sonar_sim_vertical" pkg="imaging_sonar_sim" type="imaging_sonar_sim" output="screen">
+    <param name="sonar_link_name" type="string" value="sonar_vertical_link"/>
+    <param name="cloud_topic_name" type="string" value="sonar_vertical_cloud"/>
+    <param name="image_topic_name" type="string" value="sonar_vertical_image"/>
+  </node>
+
+  <!-- Vertical Display sonar image -->
+  <node name="sonar_vertical_image" pkg="image_view" type="image_view" args="image:=sonar_vertical_image">
+    <param name="autosize" type="bool" value="true"/>
+    <param name="window_name" value="Vertical Imaging Sonar"/>
   </node>
   
   <!-- If using UWSIM -->
