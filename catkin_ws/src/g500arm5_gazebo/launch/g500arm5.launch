@@ -9,7 +9,16 @@
 
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find g500arm5_gazebo)/worlds/g500arm5.world"/>
+    <arg name="world_name" value="$(find eye_gazebo)/worlds/pylons.world"/>
+    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/diver.world"/>-->
+    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/ragdoll.world"/>-->
+    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/box.world"/>-->
+    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/empty.world"/>-->
+    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/objects.world"/>-->
+    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/ocean_floor_1.world"/>-->
+    <!--<arg name="world_name" value="$(find eye_gazebo)/worlds/cafe.world"/>-->
+    <!--<arg name="world_name" value="$(find g500arm5_gazebo)/worlds/g500arm5.world"/>-->
+    <!--<arg name="world_name" value="$(find eye)/worlds/pylons.world"/>-->
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="paused" value="$(arg paused)"/>
@@ -23,7 +32,7 @@
   
   <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-	args="-urdf -model g500arm5 -param robot_description -x 0 -y 0 -z -5" />
+	args="-urdf -model g500arm5 -param robot_description -x -3.6 -y 0 -z 1" />
   
   <!-- IAUV Dynamics : -->
   <!--<include file="$(find g500arm5_description)/launch/g500_dynamics.launch" />  -->
@@ -32,18 +41,32 @@
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
 
   <!-- Keyboard Control -->
-  <rosparam ns="iauv" param="linear_mag">1.0</rosparam>
-  <rosparam ns="iauv" param="angular_mag">1.0</rosparam>
-  <rosparam ns="iauv" param="model_name">g500arm5</rosparam>  
-  <node ns="iauv" name="velocity_control_node" pkg="keyboard_teleop" 
+  <rosparam ns="g500arm5" param="linear_mag">1.0</rosparam>
+  <rosparam ns="g500arm5" param="angular_mag">1.0</rosparam>
+  <rosparam ns="g500arm5" param="model_name">g500arm5</rosparam>  
+  <node ns="g500arm5" name="velocity_control_node" pkg="keyboard_teleop" 
         type="velocity_control" respawn="false" output="screen" 
         launch-prefix="xterm -e" />
-    
-    <!-- If using UWSIM -->
-    <arg name="USING_UWSIM" default="false" />
-    <group if="$(arg USING_UWSIM)">
-      <arg name="scene" default="cirs.xml" />
-      <node name="uwsim" pkg="uwsim" type="uwsim" args="--configfile $(arg scene)" output="screen" respawn="false" />
-    </group>
+  
 
+  <!-- ROV Camera -->
+  <node pkg="image_view" name="image_view"  type="image_view" 
+        args="image:=/g500arm5/camera1/image_raw" />  
+  
+  <!-- Sonar Image Simulator -->
+  <node name="imaging_sonar_sim" pkg="imaging_sonar_sim" type="imaging_sonar_sim" output="screen" />
+
+  <!-- Display sonar image -->
+  <node name="sonar_image" pkg="image_view" type="image_view" args="image:=sonar_image">
+    <param name="autosize" type="bool" value="true"/>
+    <param name="window_name" value="Imaging Sonar"/>
+  </node>
+  
+  <!-- If using UWSIM -->
+  <arg name="USING_UWSIM" default="false" />
+  <group if="$(arg USING_UWSIM)">
+    <arg name="scene" default="cirs.xml" />
+    <node name="uwsim" pkg="uwsim" type="uwsim" args="--configfile $(arg scene)" output="screen" respawn="false" />
+  </group>
+  
   </launch>

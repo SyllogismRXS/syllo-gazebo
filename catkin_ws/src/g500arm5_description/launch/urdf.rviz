@@ -98,6 +98,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        sonar_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -125,6 +130,8 @@ Visualization Manager:
           Value: true
         part4_jaw2:
           Value: true
+        sonar_link:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -141,6 +148,8 @@ Visualization Manager:
                       {}
                     part4_jaw2:
                       {}
+          sonar_link:
+            {}
       Update Interval: 0
       Value: true
   Enabled: true
@@ -167,22 +176,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.63902
+      Distance: 1.68998
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.189645
-        Y: 0.134235
-        Z: 0.0797608
+        X: 0.219033
+        Y: -0.337424
+        Z: -0.165586
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.395398
+      Pitch: 0.310398
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.84359
+      Yaw: 0.570405
     Saved: ~
 Window Geometry:
   Displays:

@@ -24,8 +24,77 @@
                          iyy="8.0" iyz="0.0" 
                                    izz="8.0"/>
     </inertial>          
-  </link>  
+  </link>
 
+  <xacro:property name="pi" value="3.1415926535897931" />
+
+  <!-- SONAR -->
+  <xacro:property name="sonar_length" value="0.15" />
+  <xacro:property name="sonar_radius" value="0.05" />
+  <joint name="sonar_joint" type="fixed">
+    <axis xyz="0 0 0" />
+    <origin xyz="0.70 0 0" rpy="0 ${pi} ${pi}"/>
+    <!--<origin xyz="${sonar_length/2} 0 0" rpy="${-pi/2} ${pi} ${pi}"/>-->
+    <parent link="base_link"/>
+    <child link="sonar_link"/>
+  </joint>
+  
+  <link name="sonar_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>      
+      <geometry>
+        <cylinder length="${sonar_length}" radius="${sonar_radius}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+      <geometry>
+        <cylinder length="${sonar_length}" radius="${sonar_radius}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <!-- Camera -->
+  <xacro:property name="camera_size" value="0.05" />
+  <joint name="camera_joint" type="fixed">
+    <axis xyz="0 0 1.5708" />
+    <origin xyz="0.725 0 0.2" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+  </joint>
+
+  <link name="camera_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+    <box size="${camera_size} ${camera_size} ${camera_size}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <!-- REST OF MECHANICALS-->
   <link name="part0">
     <visual>
       <origin rpy="0.0 0 0" xyz="0 0 0"/>
