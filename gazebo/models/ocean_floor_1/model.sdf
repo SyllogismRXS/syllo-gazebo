@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<sdf version="1.5">
+<sdf version="1.4">
   <model name="ocean_floor_1">    
     <static>true</static>
     <link name="link">      
